@@ -1,0 +1,33 @@
+# Use root/walkalone as user/password credentials
+version: '3.1'
+
+services:
+
+  mysql:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: oneboard
+      MYSQL_DATABASE: oneboard
+      MYSQL_USER: oneboard
+      MYSQL_PASSWORD: oneboard
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+    ports:
+      - 8080:80
+    volumes:
+      - /sessions
+    external_links:
+      - mysql:db
+
+volumes:
+    mysql:
+    sessions:
