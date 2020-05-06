@@ -1,8 +1,8 @@
 {
-  "name": "oneboard-nest",
+  "name": "oneboard-api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "API services for Oneboard IoT platform based on NestJS",
+  "author": "Shinjan Mitra",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
