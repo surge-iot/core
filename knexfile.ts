@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { knexSnakeCaseMappers } from 'objection';
 
-export const config = {
+module.exports = {
     client: 'mysql',
     connection: "mysql://oneboard:oneboard@localhost:3306/oneboard" || process.env.DATABASE_URL,
     migrations: {
