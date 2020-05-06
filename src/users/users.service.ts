@@ -6,19 +6,23 @@ import * as argon2 from "argon2";
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject('UserModel') private modelClass: ModelClass<UserModel>) {}
+  constructor(@Inject('UserModel') private modelClass: ModelClass<UserModel>) { }
 
   findAll() {
     return this.modelClass.query();
   }
 
-  findOne(id: number) {
+  findById(id: number) {
     return this.modelClass.query().findById(id);
   }
 
+  findOne(props: Partial<UserModel>) {
+    return this.modelClass.query().findOne(props);
+  }
+
   async create(props: Partial<UserModel>) {
-    const user = await this.modelClass.query().findOne({'email':props.email});
-    if(user){
+    const user = await this.modelClass.query().findOne({ 'email': props.email });
+    if (user) {
       throw new HttpException('Forbidden', HttpStatus.CONFLICT);
     }
     const password = nanoid(10);
