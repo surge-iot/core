@@ -1,6 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { UserModel } from '../database/models/user.model';
 import { ModelClass, transaction } from 'objection';
+import { nanoid } from 'nanoid';
+import * as argon2 from "argon2";
 
 @Injectable()
 export class UsersService {
@@ -14,7 +16,16 @@ export class UsersService {
     return this.modelClass.query().findById(id);
   }
 
-  create(props: Partial<UserModel>) {
+  async create(props: Partial<UserModel>) {
+    const user = await this.modelClass.query().findOne({'email':props.email});
+    if(user){
+      throw new HttpException('Forbidden', HttpStatus.CONFLICT);
+    }
+    const password = nanoid(10);
+    const hash = await argon2.hash(password);
+    props.password = hash;
+    console.log("PASSWORD: ", password);
+    // TODO: send password via email
     return this.modelClass
       .query()
       .insert(props);
