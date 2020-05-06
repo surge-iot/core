@@ -7,10 +7,14 @@ export async function up(knex: Knex) {
     // this creates an "id" column that gets autoincremented
     t.increments();
 
-    t.string('name');
-    t.string('email');
-    t.string('password');
+    t.string('name').notNullable();
+    t.string('email').notNullable();
+    t.string('password').notNullable();
+    t.boolean('isAdmin').notNullable().defaultTo(false);
 
+    t.timestamps(true, true);
+
+    t.unique(['email'])
   });
 }
 
