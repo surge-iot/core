@@ -3,7 +3,8 @@ import * as Knex from 'knex';
 import { knexSnakeCaseMappers, Model } from 'objection';
 import { UserModel } from './models/user.model';
 import  * as config from '../../knexfile' ;
-const models = [UserModel];
+import { LocationModel } from './models/location.model';
+const models = [UserModel, LocationModel];
 
 const modelProviders = models.map(model => {
   return {

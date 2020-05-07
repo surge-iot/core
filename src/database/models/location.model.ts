@@ -11,7 +11,7 @@ export class LocationModel extends BaseModel {
       relation: Model.BelongsToOneRelation,
       modelClass: LocationModel,
       join: {
-        from: 'locations.isPartOf',
+        from: 'locations.isPartOfId',
         to: 'locations.id'
       }
     },
@@ -21,7 +21,7 @@ export class LocationModel extends BaseModel {
       modelClass: LocationModel,
       join: {
         from: 'locations.id',
-        to: 'locations.isPartOf'
+        to: 'locations.isPartOfId'
       }
     },
 
@@ -29,13 +29,13 @@ export class LocationModel extends BaseModel {
       relation: Model.ManyToManyRelation,
       modelClass: LocationModel,
       join: {
-        from: 'location.id',
+        from: 'locations.id',
         through: {
           // persons_movies is the join table.
           from: 'locationLinks.locationId',
-          to: 'locationLinks.hasLinkTo'
+          to: 'locationLinks.hasLinkToId'
         },
-        to: 'location.id'
+        to: 'locations.id'
       }
     }
   };

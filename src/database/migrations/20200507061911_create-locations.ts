@@ -7,13 +7,12 @@ export async function up(knex: Knex) {
     // this creates an "id" column that gets autoincremented
     t.increments();
     t.string('name').notNullable();
-    t.string('email').notNullable();
-    t.integer('isPartOf').unsigned();
-
+    t.integer('isPartOfId').unsigned();
+    t.json('meta');
     t.timestamps(true, true);
 
     // Constraints
-    t.foreign('isPartOf').references('locations.id').onDelete('CASCADE');
+    t.foreign('isPartOfId').references('locations.id').onDelete('CASCADE');
   });
 }
 
