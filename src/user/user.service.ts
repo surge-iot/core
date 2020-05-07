@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import * as argon2 from "argon2";
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(@Inject('UserModel') private modelClass: ModelClass<UserModel>) { }
 
   findAll() {

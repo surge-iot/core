@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserModel } from 'src/database/models/user.model';
 import * as argon2 from "argon2";
@@ -7,12 +7,12 @@ import * as argon2 from "argon2";
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private userService: UserService,
     private jwtService: JwtService
   ) {}
 
   async validateUser(email: string, password: string): Promise<Partial<UserModel> | null> {
-    const user = await this.usersService.findOne({ email: email });
+    const user = await this.userService.findOne({ email: email });
     if (user && await argon2.verify(user.password, password)) {
       return user;
     }

@@ -1,32 +1,32 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards, } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import { UserModel } from '../database/models/user.model';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@Controller('users')
-export class UsersController {
-  constructor(private usersService: UsersService) {
+@Controller('user')
+export class UserController {
+  constructor(private userService: UserService) {
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
-    return this.usersService.findAll();
+    return this.userService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id', new ParseIntPipe()) id: number) {
-    return this.usersService.findById(id);
+    return this.userService.findById(id);
   }
 
   @Post()
   async create(@Body() props: Partial<UserModel>) {
-    return this.usersService.create(props);
+    return this.userService.create(props);
   }
 
   @Delete(':id')
   async delete(@Param('id', new ParseIntPipe()) id: number) {
-    return this.usersService.delete(id);
+    return this.userService.delete(id);
   }
 
   @Put(':id')
@@ -34,6 +34,6 @@ export class UsersController {
     @Param('id', new ParseIntPipe()) id: number,
     @Body() props: Partial<UserModel>
   ) {
-    return this.usersService.update(id, props);
+    return this.userService.update(id, props);
   }
 }
