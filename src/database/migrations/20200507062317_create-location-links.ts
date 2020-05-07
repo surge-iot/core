@@ -1,20 +1,18 @@
 import * as Knex from 'knex';
 
-const tableName = 'users';
+const tableName = 'locationLinks';
 
 export async function up(knex: Knex) {
   return knex.schema.createTable(tableName, t => {
     // this creates an "id" column that gets autoincremented
     t.increments();
-
-    t.string('name').notNullable();
-    t.string('email').notNullable();
-    t.string('password').notNullable();
-    t.boolean('isAdmin').notNullable().defaultTo(false);
-
+    t.integer('locationId').unsigned().notNullable();
+    t.integer('hasLinkTo').unsigned().notNullable();
     t.timestamps(true, true);
 
-    t.unique(['email']);
+    // Constrains
+    t.foreign('locationId').references('locations.id').onDelete('CASCADE');
+    t.foreign('hasLinkTo').references('locations.id').onDelete('CASCADE');
   });
 }
 
