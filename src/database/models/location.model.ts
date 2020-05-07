@@ -5,13 +5,15 @@ export class LocationModel extends BaseModel {
   static tableName = 'locations';
 
   name: string;
+  parentId: number;
+  meta: 'json';
 
   static relationMappings = {
-    isPartOf: {
+    parent: {
       relation: Model.BelongsToOneRelation,
       modelClass: LocationModel,
       join: {
-        from: 'locations.isPartOfId',
+        from: 'locations.parentId',
         to: 'locations.id'
       }
     },
@@ -21,7 +23,7 @@ export class LocationModel extends BaseModel {
       modelClass: LocationModel,
       join: {
         from: 'locations.id',
-        to: 'locations.isPartOfId'
+        to: 'locations.parentId'
       }
     },
 
@@ -32,8 +34,8 @@ export class LocationModel extends BaseModel {
         from: 'locations.id',
         through: {
           // persons_movies is the join table.
-          from: 'locationLinks.locationId',
-          to: 'locationLinks.hasLinkToId'
+          from: 'locationLinks.parentId',
+          to: 'locationLinks.locationId'
         },
         to: 'locations.id'
       }

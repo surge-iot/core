@@ -7,27 +7,27 @@ export async function seed(knex: Knex): Promise<any> {
   const building = await knex('locations').insert({
     id: 1,
     name: 'Building 1',
-    isPartOfId: null
+    parentId: null
   });
   const floor = await knex('locations').insert({
     id: 2,
     name: 'Floor 1',
-    isPartOfId: building[0]
+    parentId: building[0]
   });
   const wing = await knex('locations').insert({
     id: 3,
     name: 'Wing 1',
-    isPartOfId: building[0]
+    parentId: building[0]
   });
 
   const room = await knex('locations').insert({
     id: 4,
     name: 'Room 1',
-    isPartOfId: floor[0]
+    parentId: floor[0]
   });
 
   await knex('location_links').insert({
-    locationId: wing[0],
-    hasLinkToId: room[0]
+    parentId: wing[0],
+    locationId: room[0]
   });
 }

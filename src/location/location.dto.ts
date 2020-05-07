@@ -9,7 +9,7 @@ export class CreateDto {
 
   @IsOptional()
   @IsPositive()
-  isPartOfId: number
+  parentId: number
 }
 
 export class UpdateDto {
