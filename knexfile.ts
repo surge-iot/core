@@ -4,7 +4,7 @@ import { knexSnakeCaseMappers } from 'objection';
 const config = { 
   development: { 
     client: 'mysql',
-    connection: "mysql://oneboard:oneboard@localhost:3306/oneboard" || process.env.DATABASE_URL,
+    connection: process.env.DATABASE_URL || "mysql://oneboard:oneboard@localhost:3306/oneboard",
     migrations: {
         directory: './src/database/migrations',
         stub: './src/database/migration.stub',
@@ -18,7 +18,7 @@ const config = {
   },
   test: {
     client: 'mysql',
-    connection: "mysql://oneboard:oneboard@localhost:3306/test" || process.env.TEST_DATABASE_URL,
+    connection: process.env.TEST_DATABASE_URL || "mysql://oneboard:oneboard@localhost:3306/test",
     migrations: {
         directory: './src/database/migrations',
         stub: './src/database/migration.stub',
