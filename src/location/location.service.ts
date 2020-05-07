@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { LocationModel } from '../database/models/location.model';
 import { ModelClass } from 'objection';
 import { CreateDto, UpdateDto } from './location.dto';
@@ -8,9 +8,13 @@ export class LocationService {
   constructor(@Inject('LocationModel') private modelClass: ModelClass<LocationModel>) { }
 
   async findById(id: number) {
-    return this.modelClass.query()
+    const location = await this.modelClass.query()
       .findById(id)
       .withGraphFetched('[children, links]');
+    if (!location) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return location;
   }
 
   async create(props: Partial<CreateDto>): Promise<LocationModel> {
@@ -19,21 +23,60 @@ export class LocationService {
       .insert(props);
   }
 
-  update(id: number, props: Partial<UpdateDto>) {
-    return this.modelClass
+  async update(id: number, props: Partial<UpdateDto>) {
+    const location = await this.modelClass
       .query()
-      .patch(props)
-      .where({ id })
-      .returning('*')
-      .first();
+      .patchAndFetchById(id, props)
+    if (!location) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return location;
   }
 
-  delete(id: number) {
-    return this.modelClass
+  async delete(id: number) {
+    const location = await this.modelClass
       .query()
       .delete()
       .where({ id })
-      .returning('*')
       .first();
+    if (!location) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return location;
+  }
+
+  async changeParent(id: number, parentId: number): Promise<LocationModel> {
+    const location = await this.modelClass
+      .query()
+      .patchAndFetchById(id, { parentId });
+    if (!location) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return location;
+  }
+
+  async addLink(id: number, linkId: number): Promise<LocationModel> {
+    const location = await this.findById(id);
+    const link = await this.findById(linkId);
+    const affected = await this.modelClass.relatedQuery('links')
+      .for(id)
+      .relate(linkId);
+    if (!affected) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return this.findById(id);
+  }
+
+  async removeLink(id: number, linkId: number): Promise<LocationModel> {
+    const location = await this.findById(id);
+    const link = await this.findById(linkId);
+    const affected = await this.modelClass.relatedQuery('links')
+      .for(id)
+      .unrelate()
+      .where('locationId', linkId);
+    if (!affected) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return this.findById(id);
   }
 }
