@@ -36,13 +36,13 @@ export class LocationController {
     return this.locationService.changeParent(id, newParentId);
   }
 
-  @Post(':id/add-link/:linkId')
+  @Put(':id/add-link/:linkId')
   async addLink(@Param('id', new ParseIntPipe()) id: number,
     @Param('linkId', new ParseIntPipe()) linkId: number) {
       return this.locationService.addLink(id, linkId);
   }
 
-  @Post(':id/remove-link/:linkId')
+  @Delete(':id/remove-link/:linkId')
   async removeLink(@Param('id', new ParseIntPipe()) id: number,
     @Param('linkId', new ParseIntPipe()) linkId: number) {
       return this.locationService.removeLink(id, linkId);
