@@ -5,7 +5,9 @@ import { UserModel } from './models/user.model';
 import  * as config from '../../knexfile' ;
 import { LocationModel } from './models/location.model';
 import { EquipmentModel } from './models/equipment.model';
-const models = [UserModel, LocationModel, EquipmentModel];
+import { SensorModel } from './models/sensor.model';
+import { PointModel } from './models/point.model';
+const models = [UserModel, LocationModel, EquipmentModel, PointModel, SensorModel];
 
 const modelProviders = models.map(model => {
   return {
