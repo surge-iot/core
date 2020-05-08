@@ -8,7 +8,7 @@ export async function up(knex: Knex) {
     t.increments();
     t.string('name').notNullable();
     t.integer('parentId').unsigned();
-    t.integer('locationId').unsigned();
+    t.integer('locationId').unsigned().notNullable();
     t.json('meta');
     t.timestamps(true, true);
 
