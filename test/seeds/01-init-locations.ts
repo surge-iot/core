@@ -25,6 +25,11 @@ export async function seed(knex: Knex): Promise<any> {
     name: 'Room 1',
     parentId: floor[0]
   });
+  const room2 = await knex('locations').insert({
+    id: 5,
+    name: 'Room 2',
+    parentId: floor[0]
+  });
 
   await knex('location_links').insert({
     parentId: wing[0],
