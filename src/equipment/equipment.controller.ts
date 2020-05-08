@@ -6,7 +6,7 @@ import { CreateDto, FindDto, UpdateDto } from './equipment.dto';
 export class EquipmentController {
   constructor(private equipmentService: EquipmentService) { }
   
-  @Get(':id')
+  @Get()
   async findAll(@Query() filters: FindDto) {
     return this.equipmentService.findAll(filters);
   }

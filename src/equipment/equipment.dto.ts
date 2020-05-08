@@ -33,8 +33,7 @@ export class UpdateDto {
 }
 
 export class FindDto {
-  @IsOptional()
-  @IsPositive()
+  @IsNotEmpty()
   locationId: number;
 }
 

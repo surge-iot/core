@@ -34,13 +34,16 @@ describe('LocationController (e2e)', () => {
         "id": 2,
         "name": "Floor 1",
         "parentId": 1,
-        "meta": null,
         "children": [
           {
             "id": 4,
             "name": "Room 1",
             "parentId": 2,
-            "meta": null,
+          },
+          {
+            "id": 5,
+            "name": "Room 2",
+            "parentId": 2,
           }
         ],
         "links": []
@@ -149,7 +152,7 @@ describe('LocationController (e2e)', () => {
       set('Accept', 'application/json');
     expect(response.status).toBe(400);
   });
-  
+
 
   it('/api/location/ (POST) should succeed', async () => {
     const response = await request(app.getHttpServer()).post('/api/location').
