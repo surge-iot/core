@@ -2,11 +2,14 @@ import { BaseModel } from './base.model';
 import { Model } from 'objection';
 import { LocationModel } from './location.model';
 import { EquipmentModel } from './equipment.model';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class PointModel extends BaseModel {
   static tableName = 'points';
-
+  
+  @IsNotEmpty()
   locationId: number;
+  @IsOptional()
   equipmentId: number;
 
   static relationMappings = {
@@ -28,33 +31,6 @@ export class PointModel extends BaseModel {
       }
     },
 
-    pointOfLocations: {
-      relation: Model.ManyToManyRelation,
-      modelClass: LocationModel,
-      join: {
-        from: 'points.id',
-        through: {
-          // persons_movies is the join table.
-          from: 'pointOfLocations.pointId',
-          to: 'pointOfLocations.locationId'
-        },
-        to: 'locations.id'
-      }
-    },
-
-    pointOfEquipments: {
-      relation: Model.ManyToManyRelation,
-      modelClass: EquipmentModel,
-      join: {
-        from: 'points.id',
-        through: {
-          // persons_movies is the join table.
-          from: 'pointOfEquipments.pointId',
-          to: 'pointOfEquipments.equipmentId'
-        },
-        to: 'equipments.id'
-      }
-    }
   };
 
   static jsonSchema = {

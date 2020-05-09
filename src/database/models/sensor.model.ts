@@ -8,8 +8,12 @@ export class SensorModel extends BaseModel{
   static tableName = 'sensors';
 
   name: string;
-  point: Partial<PointModel>;
-  pointOfLocations: Partial<LocationModel[]>;
+  deviceId: string;
+  meta: "json";
+  point: PointModel;
+  pointOfLocations: LocationModel[];
+  pointOfEquipments: EquipmentModel[];
+
   static relationMappings = {
 
     point:{ 
@@ -55,6 +59,9 @@ export class SensorModel extends BaseModel{
 
     properties: {
       name: { type: 'string' },
+      deviceId: { type: 'string' },
+      meta: { type: 'json' },
+
       createdAt: {
         type: 'string',
         format: 'date-time'
