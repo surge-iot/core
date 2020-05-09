@@ -45,4 +45,46 @@ export class SensorController {
     }
     return sensor;
   }
+
+
+  @Put(':id/add-point-of-location/:locationId')
+  async addPointOfLocation(@Param('id', new ParseIntPipe()) id: number,
+    @Param('locationId', new ParseIntPipe()) locationId: number) {
+    const affected = await this.sensorService.addPointOfLocation(id, locationId);
+    if (!affected) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return affected;
+  }
+
+  @Delete(':id/remove-point-of-location/:locationId')
+  async removePointOfLocation(@Param('id', new ParseIntPipe()) id: number,
+    @Param('locationId', new ParseIntPipe()) locationId: number) {
+    const affected = await this.sensorService.removePointOfLocation(id, locationId);
+    if (!affected) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return affected;
+  }
+
+
+  @Put(':id/add-point-of-equipment/:equipmentId')
+  async addPointOfEquipment(@Param('id', new ParseIntPipe()) id: number,
+    @Param('equipmentId', new ParseIntPipe()) equipmentId: number) {
+    const affected = await this.sensorService.addPointOfEquipment(id, equipmentId);
+    if (!affected) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return affected;
+  }
+
+  @Delete(':id/remove-point-of-equipment/:equipmentId')
+  async removePointOfEquipment(@Param('id', new ParseIntPipe()) id: number,
+    @Param('equipmentId', new ParseIntPipe()) equipmentId: number) {
+    const affected = await this.sensorService.removePointOfEquipment(id, equipmentId);
+    if (!affected) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return affected;
+  }
 }
