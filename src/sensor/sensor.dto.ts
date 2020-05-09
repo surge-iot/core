@@ -37,3 +37,20 @@ export class FindDto{
   @IsOptional()
   pointOfEquipmentId: number;
 }
+
+
+export class UpdateDto {
+  @IsOptional()
+  name: string;
+
+  @IsOptional()
+  deviceId: string;
+
+  @IsOptional()
+  meta: 'json';
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PointModel)
+  point: PointModel;
+}

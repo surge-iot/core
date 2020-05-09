@@ -1,6 +1,6 @@
-import { Controller, Get, Query, Body, Post, Param, ParseIntPipe, Delete, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Query, Body, Post, Param, ParseIntPipe, Delete, HttpException, HttpStatus, Put } from '@nestjs/common';
 import { SensorService } from './sensor.service';
-import { CreateDto, FindDto } from './sensor.dto';
+import { CreateDto, FindDto, UpdateDto } from './sensor.dto';
 
 @Controller('sensor')
 export class SensorController {
@@ -31,5 +31,18 @@ export class SensorController {
     if (!sensor) {
       throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
     }
+    return sensor;
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() props: UpdateDto
+  ) {
+    const sensor = this.sensorService.update(id, props);
+    if (!sensor) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return sensor;
   }
 }
