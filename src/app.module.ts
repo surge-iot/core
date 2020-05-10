@@ -7,9 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { LocationModule } from './location/location.module';
 import { EquipmentModule } from './equipment/equipment.module';
 import { SensorModule } from './sensor/sensor.module';
+import { CommandModule } from './command/command.module';
 
 @Module({
-  imports: [DatabaseModule, UserModule, AuthModule, LocationModule, EquipmentModule, SensorModule],
+  imports: [DatabaseModule, UserModule, AuthModule, LocationModule, EquipmentModule, SensorModule, CommandModule],
   controllers: [AppController],
   providers: [AppService],
 })

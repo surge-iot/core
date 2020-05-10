@@ -4,12 +4,10 @@ import { EquipmentModel } from './equipment.model';
 import { BaseModel } from './base.model';
 import { PointModel } from './point.model';
 
-export class SensorModel extends BaseModel{
-  static tableName = 'sensors';
+export class CommandModel extends BaseModel {
+  static tableName = 'commands';
 
-  name: string;
-  deviceId: string;
-  sensorTypeId: string;
+  commandTypeId: string;
   meta: "json";
   point: PointModel;
   pointOfLocations: LocationModel[];
@@ -17,20 +15,20 @@ export class SensorModel extends BaseModel{
 
   static relationMappings = {
 
-    point:{ 
+    point: {
       relation: Model.BelongsToOneRelation,
       modelClass: PointModel,
-      join:{ 
-        from: 'sensors.id', 
+      join: {
+        from: 'commands.id',
         to: 'points.id'
       }
     },
-    
+
     pointOfLocations: {
       relation: Model.ManyToManyRelation,
       modelClass: LocationModel,
       join: {
-        from: 'sensors.id',
+        from: 'commands.id',
         through: {
           // persons_movies is the join table.
           from: 'pointOfLocations.pointId',
@@ -44,7 +42,7 @@ export class SensorModel extends BaseModel{
       relation: Model.ManyToManyRelation,
       modelClass: EquipmentModel,
       join: {
-        from: 'sensors.id',
+        from: 'commands.id',
         through: {
           // persons_movies is the join table.
           from: 'pointOfEquipments.pointId',
@@ -59,9 +57,7 @@ export class SensorModel extends BaseModel{
     type: 'object',
 
     properties: {
-      name: { type: 'string' },
-      deviceId: { type: 'string' },
-      sensorTypeId: {type: 'string'},
+      commandTypeId: { type: 'string' },
       meta: { type: 'json' },
 
       createdAt: {
