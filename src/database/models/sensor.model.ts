@@ -9,6 +9,7 @@ export class SensorModel extends BaseModel{
 
   name: string;
   deviceId: string;
+  sensorTypeId: string;
   meta: "json";
   point: PointModel;
   pointOfLocations: LocationModel[];

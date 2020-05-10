@@ -25,6 +25,7 @@ export class SensorService {
       .andWhere('pointOfLocations.id', filters.pointOfLocationId)
       .andWhere('pointOfEquipments.id', filters.pointOfEquipmentId)
       .andWhere('deviceId', filters.deviceId)
+      .andWhere('sensorTypeId', filters.sensorTypeId)
       .andWhere('sensors.name', 'like', filters.name)
   }
 

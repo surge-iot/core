@@ -9,6 +9,9 @@ export class CreateDto {
   @IsOptional()
   deviceId: string;
 
+  @IsNotEmpty()
+  sensorTypeId: string;
+
   @IsOptional()
   meta: 'json';
 
@@ -21,6 +24,9 @@ export class CreateDto {
 export class FindDto{
   @IsOptional()
   name: string;
+
+  @IsOptional()
+  sensorTypeId: string;
 
   @IsOptional()
   deviceId: string;
@@ -42,6 +48,9 @@ export class FindDto{
 export class UpdateDto {
   @IsOptional()
   name: string;
+
+  @IsOptional()
+  sensorTypeId: string;
 
   @IsOptional()
   deviceId: string;
