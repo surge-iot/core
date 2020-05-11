@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserModel } from 'src/database/models/user.model';
+import { UserModel } from '../database/models/user.model';
 import * as argon2 from "argon2";
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsOptional, IsPositive, ValidateNested } from 'class-validator';
-import { PointModel } from 'src/database/models/point.model';
+import { PointModel } from '../database/models/point.model';
 import { Type } from 'class-transformer';
 
 export class CreateDto {

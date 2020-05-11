@@ -1,10 +1,10 @@
 import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { ModelClass } from 'objection';
 import { SensorModel } from '../database/models/sensor.model';
-import { LocationModel } from 'src/database/models/location.model';
+import { LocationModel } from '../database/models/location.model';
 import { CreateDto, FindDto, UpdateDto } from './sensor.dto';
-import { PointModel } from 'src/database/models/point.model';
-import { EquipmentModel } from 'src/database/models/equipment.model';
+import { PointModel } from '../database/models/point.model';
+import { EquipmentModel } from '../database/models/equipment.model';
 
 @Injectable()
 export class SensorService {

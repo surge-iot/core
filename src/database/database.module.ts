@@ -8,7 +8,8 @@ import { EquipmentModel } from './models/equipment.model';
 import { SensorModel } from './models/sensor.model';
 import { PointModel } from './models/point.model';
 import { CommandModel } from './models/command.model';
-const models = [UserModel, LocationModel, EquipmentModel, PointModel, SensorModel, CommandModel];
+import { SetpointModel } from './models/setpoint.model';
+const models = [UserModel, LocationModel, EquipmentModel, PointModel, SensorModel, CommandModel, SetpointModel];
 
 const modelProviders = models.map(model => {
   return {

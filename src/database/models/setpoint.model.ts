@@ -4,14 +4,12 @@ import { EquipmentModel } from './equipment.model';
 import { BaseModel } from './base.model';
 import { PointModel } from './point.model';
 
-export class CommandModel extends BaseModel {
+export class SetpointModel extends BaseModel {
   static tableName = 'setpoints';
-
+  value: number;
   commandTypeId: string;
   meta: "json";
   point: PointModel;
-  pointOfLocations: LocationModel[];
-  pointOfEquipments: EquipmentModel[];
 
   static relationMappings = {
 
@@ -29,6 +27,7 @@ export class CommandModel extends BaseModel {
     type: 'object',
 
     properties: {
+      value: {type: 'number'},
       commandTypeId: { type: 'string' },
       meta: { type: 'json' },
 

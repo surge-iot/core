@@ -1,5 +1,5 @@
 import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
-import { EquipmentModel } from 'src/database/models/equipment.model';
+import { EquipmentModel } from '../database/models/equipment.model';
 import { ModelClass } from 'objection';
 import { CreateDto, UpdateDto, FindDto } from './equipment.dto';
 

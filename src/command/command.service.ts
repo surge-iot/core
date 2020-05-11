@@ -1,10 +1,11 @@
 import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { ModelClass } from 'objection';
 import { CommandModel } from '../database/models/command.model';
-import { LocationModel } from 'src/database/models/location.model';
+import { LocationModel } from '../database/models/location.model';
 import { CreateDto, FindDto, UpdateDto } from './command.dto';
-import { PointModel } from 'src/database/models/point.model';
-import { EquipmentModel } from 'src/database/models/equipment.model';
+import { PointModel } from '../database/models/point.model';
+import { EquipmentModel } from '../database/models/equipment.model';
+import { SetpointModel } from '../database/models/setpoint.model';
 
 @Injectable()
 export class CommandService {
@@ -12,6 +13,7 @@ export class CommandService {
   constructor(@Inject('CommandModel') private modelClass: ModelClass<CommandModel>,
     @Inject('PointModel') private pointModelClass: ModelClass<PointModel>,
     @Inject('EquipmentModel') private equipmentModelClass: ModelClass<EquipmentModel>,
+    @Inject('SetpointModel') private setpointModelClass: ModelClass<SetpointModel>,
     @Inject('LocationModel') private locationModelClass: ModelClass<LocationModel>) { }
 
   async findAll(filters: Partial<FindDto>): Promise<CommandModel[]> {
@@ -58,7 +60,7 @@ export class CommandService {
   async addPointOfLocation(id: number, locationId: number): Promise<number> {
     const command = await this.modelClass.query().findById(id)
     const location = await this.locationModelClass.query().findById(locationId)
-    if(!command || !location){
+    if (!command || !location) {
       return null;
     }
     return this.modelClass.relatedQuery('pointOfLocations')
@@ -69,7 +71,7 @@ export class CommandService {
   async removePointOfLocation(id: number, locationId: number): Promise<number> {
     const command = await this.modelClass.query().findById(id)
     const location = await this.locationModelClass.query().findById(locationId)
-    if(!command || !location){
+    if (!command || !location) {
       return null;
     }
     return this.modelClass.relatedQuery('pointOfLocations')
@@ -81,7 +83,7 @@ export class CommandService {
   async addPointOfEquipment(id: number, equipmentId: number): Promise<number> {
     const command = await this.modelClass.query().findById(id)
     const equipment = await this.equipmentModelClass.query().findById(equipmentId)
-    if(!command || !equipment){
+    if (!command || !equipment) {
       return null;
     }
     return this.modelClass.relatedQuery('pointOfEquipments')
@@ -92,7 +94,7 @@ export class CommandService {
   async removePointOfEquipment(id: number, equipmentId: number): Promise<number> {
     const command = await this.modelClass.query().findById(id)
     const equipment = await this.equipmentModelClass.query().findById(equipmentId)
-    if(!command || !equipment){
+    if (!command || !equipment) {
       return null;
     }
     return this.modelClass.relatedQuery('pointOfEquipments')
