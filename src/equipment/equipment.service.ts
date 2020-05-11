@@ -15,7 +15,7 @@ export class EquipmentService {
   async findById(id: number) {
     const equipment = await this.modelClass.query()
       .findById(id)
-      .withGraphFetched('[children, links, location, points.[command,setpoint], commandsForEquipment]');
+      .withGraphFetched('[children, links, location, points.[command,setpoint]]');
     if (!equipment) {
       throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
     }

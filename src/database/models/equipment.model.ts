@@ -57,7 +57,7 @@ export class EquipmentModel extends BaseModel {
       modelClass:  __dirname + '/point.model',
       join: {
         from: 'equipments.id',
-        to: 'points.id'
+        to: 'points.equipmentId'
       }
     },
 

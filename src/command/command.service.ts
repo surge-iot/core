@@ -89,13 +89,21 @@ export class CommandService {
 
     try {
       const returnValue = await this.modelClass.transaction(async trx => {
-        await this.setpointModelClass.query(trx)
-          .insertGraph({
+        const setpoint = await this.setpointModelClass.query(trx)
+          .joinRelated('point')
+          .findOne({
             commandTypeId: command.commandTypeId,
-            point: {
-              equipmentId: equipment.id
-            }
-          });
+            'point.equipmentId': equipment.id
+          })
+        if (!setpoint) {
+          await this.setpointModelClass.query(trx)
+            .insertGraph({
+              commandTypeId: command.commandTypeId,
+              point: {
+                equipmentId: equipment.id
+              }
+            });
+        }
         return this.modelClass.relatedQuery('pointOfEquipments', trx)
           .for(id)
           .relate(equipmentId);
