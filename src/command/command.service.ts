@@ -138,17 +138,21 @@ export class CommandService {
     }
     try {
       const returnValue = await this.setpointModelClass.transaction(async trx => {
-        const setpoints = this.setpointModelClass.query()
+        await this.setpointModelClass.query()
           .joinRelated('point.equipment.commandsForEquipment')
-          .where('commandsForEquipment.id', id)
-          .andWhere('setpoints.commandTypeId', command.commandTypeId);
-
-        await setpoints.patch({ value })
-        return setpoints;
+          .where('point:equipment:commandsForEquipment.id', id)
+          .andWhere('setpoints.commandTypeId', command.commandTypeId)
+          .patch({ value })
+        return this.setpointModelClass.query()
+          .joinRelated('point.equipment.commandsForEquipment')
+          .where('point:equipment:commandsForEquipment.id', id)
+          .andWhere('setpoints.commandTypeId', command.commandTypeId)
+          .withGraphFetched('point')
       });
       return returnValue;
       // Here the transaction has been committed.
     } catch (err) {
+      console.log(err)
       // Here the transaction has been rolled back.
       return null;
     }

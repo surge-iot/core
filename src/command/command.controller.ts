@@ -87,4 +87,14 @@ export class CommandController {
     }
     return affected;
   }
+
+  @Put(':id/trigger/:value')
+  async trigger(@Param('id', new ParseIntPipe()) id: number,
+    @Param('value', new ParseIntPipe()) value: number) {
+    const affected = await this.commandService.trigger(id, value);
+    if (!affected) {
+      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return affected;
+  }
 }

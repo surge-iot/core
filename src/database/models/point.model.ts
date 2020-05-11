@@ -26,8 +26,8 @@ export class PointModel extends BaseModel {
       relation: Model.HasManyRelation,
       modelClass: EquipmentModel,
       join: {
-        from: 'points.id',
-        to: 'equipments.parentId'
+        from: 'points.equipmentId',
+        to: 'equipments.id'
       }
     },
 
