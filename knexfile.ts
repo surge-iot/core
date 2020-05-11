@@ -18,7 +18,12 @@ const config = {
   },
   test: {
     client: 'mysql',
-    connection: process.env.TEST_DATABASE_URL || "mysql://oneboard:oneboard@localhost:3306/test",
+    connection:  {
+      host: 'localhost',
+      database: 'test',
+      user: process.env.TEST_DATABASE_USER || 'oneboard',
+      password: process.env.TEST_DATABASE_PASSWORD ||'oneboard',
+    },
     migrations: {
         directory: './src/database/migrations',
         stub: './src/database/migration.stub',
