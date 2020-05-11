@@ -13,6 +13,7 @@ export async function up(knex: Knex) {
     // Constraints
     t.foreign('pointId').references('points.id').onDelete('CASCADE');
     t.foreign('locationId').references('locations.id').onDelete('CASCADE');
+    t.unique(['pointId', 'locationId']);
 
   });
 }
