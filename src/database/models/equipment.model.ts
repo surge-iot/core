@@ -1,7 +1,6 @@
 import { BaseModel } from './base.model';
 import { Model } from 'objection';
 import { LocationModel } from './location.model';
-import { CommandModel } from './command.model';
 
 export class EquipmentModel extends BaseModel {
   static tableName = 'equipments';
@@ -53,9 +52,18 @@ export class EquipmentModel extends BaseModel {
       }
     },
 
+    points:{ 
+      relation: Model.HasManyRelation,
+      modelClass:  __dirname + '/point.model',
+      join: {
+        from: 'equipments.id',
+        to: 'points.id'
+      }
+    },
+
     commandsForEquipment:{ 
       relation: Model.ManyToManyRelation,
-      modelClass: CommandModel,
+      modelClass:  __dirname + '/command.model',
       join: {
         from: 'equipments.id',
         through: {

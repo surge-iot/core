@@ -86,9 +86,29 @@ export class CommandService {
     if (!command || !equipment) {
       return null;
     }
-    return this.modelClass.relatedQuery('pointOfEquipments')
-      .for(id)
-      .relate(equipmentId);
+
+    try {
+      const returnValue = await this.modelClass.transaction(async trx => {
+        await this.setpointModelClass.query(trx)
+          .insertGraph({
+            commandTypeId: command.commandTypeId,
+            point: {
+              equipmentId: equipment.id
+            }
+          });
+        return this.modelClass.relatedQuery('pointOfEquipments', trx)
+          .for(id)
+          .relate(equipmentId);
+
+      });
+      return returnValue;
+      // Here the transaction has been committed.
+    } catch (err) {
+      // Here the transaction has been rolled back.
+      console.log(err)
+      return null;
+    }
+
   }
 
   async removePointOfEquipment(id: number, equipmentId: number): Promise<number> {
@@ -101,5 +121,28 @@ export class CommandService {
       .for(id)
       .unrelate()
       .where('equipmentId', equipmentId);
+  }
+
+  async trigger(id: number, value: number): Promise<SetpointModel[]> {
+    const command = await this.modelClass.query().findById(id);
+    if (!command) {
+      return null;
+    }
+    try {
+      const returnValue = await this.setpointModelClass.transaction(async trx => {
+        const setpoints = this.setpointModelClass.query()
+          .joinRelated('point.equipment.commandsForEquipment')
+          .where('commandsForEquipment.id', id)
+          .andWhere('setpoints.commandTypeId', command.commandTypeId);
+
+        await setpoints.patch({ value })
+        return setpoints;
+      });
+      return returnValue;
+      // Here the transaction has been committed.
+    } catch (err) {
+      // Here the transaction has been rolled back.
+      return null;
+    }
   }
 }

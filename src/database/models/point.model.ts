@@ -31,6 +31,31 @@ export class PointModel extends BaseModel {
       }
     },
 
+    sensor: {
+      relation: Model.HasOneRelation,
+      modelClass:  __dirname + '/sensor.model',
+      join: {
+        from: 'points.id',
+        to: 'sensors.id'
+      }
+    },
+    command: {
+      relation: Model.HasOneRelation,
+      modelClass:  __dirname + '/command.model',
+      join: {
+        from: 'points.id',
+        to: 'commands.id'
+      }
+    },
+    setpoint: {
+      relation: Model.HasOneRelation,
+      modelClass:  __dirname + '/setpoint.model',
+      join: {
+        from: 'points.id',
+        to: 'setpoints.id'
+      }
+    },
+
   };
 
   static jsonSchema = {
