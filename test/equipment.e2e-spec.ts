@@ -144,7 +144,7 @@ describe('EquipmentController (e2e)', () => {
   it('/api/equipment/ (POST) should succeed', async () => {
     const response = await request(app.getHttpServer()).post('/api/equipment').
       send({
-        "name": "Fan 1",
+        "name": "Fan 2",
         "locationId": 5
       }).
       set('Accept', 'application/json');
