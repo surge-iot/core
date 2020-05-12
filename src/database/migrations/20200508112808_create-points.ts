@@ -14,7 +14,7 @@ export async function up(knex: Knex) {
     // Constraints
     t.foreign('locationId').references('locations.id').onDelete('CASCADE');
     t.foreign('equipmentId').references('equipments.id').onDelete('CASCADE');
-    t.foreign('classId').references('pointClasses.id').onDelete('RESTRICT');
+    t.foreign('classId').references('pointClasses.id').onDelete('RESTRICT').onUpdate('CASCADE');
 
   });
 }

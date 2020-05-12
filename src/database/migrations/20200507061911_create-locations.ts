@@ -13,7 +13,7 @@ export async function up(knex: Knex) {
     t.timestamps(true, true);
 
     // Constraints
-    t.foreign('classId').references('locationClasses.id').onDelete('RESTRICT');
+    t.foreign('classId').references('locationClasses.id').onDelete('RESTRICT').onUpdate('CASCADE');
     t.foreign('parentId').references('locations.id').onDelete('CASCADE');
   });
 }
