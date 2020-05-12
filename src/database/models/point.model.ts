@@ -2,17 +2,25 @@ import { BaseModel } from './base.model';
 import { Model } from 'objection';
 import { LocationModel } from './location.model';
 import { EquipmentModel } from './equipment.model';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { PointClassModel } from './point-class.model';
 
 export class PointModel extends BaseModel {
   static tableName = 'points';
-  
-  @IsNotEmpty()
+
+  classId: string;
   locationId: number;
-  @IsOptional()
   equipmentId: number;
 
   static relationMappings = {
+    class: {
+      relation: Model.BelongsToOneRelation,
+      modelClass: PointClassModel,
+      join: {
+        from: 'equipments.classId',
+        to: 'equipmentClasses.id'
+      }
+    },
+
     location: {
       relation: Model.BelongsToOneRelation,
       modelClass: LocationModel,
@@ -30,39 +38,15 @@ export class PointModel extends BaseModel {
         to: 'equipments.id'
       }
     },
-
-    sensor: {
-      relation: Model.HasOneRelation,
-      modelClass:  __dirname + '/sensor.model',
-      join: {
-        from: 'points.id',
-        to: 'sensors.id'
-      }
-    },
-    command: {
-      relation: Model.HasOneRelation,
-      modelClass:  __dirname + '/command.model',
-      join: {
-        from: 'points.id',
-        to: 'commands.id'
-      }
-    },
-    setpoint: {
-      relation: Model.HasOneRelation,
-      modelClass:  __dirname + '/setpoint.model',
-      join: {
-        from: 'points.id',
-        to: 'setpoints.id'
-      }
-    },
-
   };
 
   static jsonSchema = {
     type: 'object',
+    required: ['classId', 'locationId'],
 
     properties: {
       id: { type: 'integer' },
+      classId: { type: 'string' },
       locationId: { type: 'integer' },
       equipmentId: { type: 'integer' },
       createdAt: {
