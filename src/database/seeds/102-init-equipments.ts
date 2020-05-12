@@ -1,7 +1,9 @@
 import * as Knex from 'knex';
 
 export async function seed(knex: Knex): Promise<any> {
-
+  if(process.env.NODE_ENV==='production'){
+    return null;
+  }
   await knex('equipments').del();
   await knex('equipment_links').del();
   const ODU = await knex('equipments').insert({
@@ -29,7 +31,12 @@ export async function seed(knex: Knex): Promise<any> {
     parentId: ac[0],
     locationId: 5
   });
-
+  const fan = await knex('equipments').insert({
+    id: 5,
+    name: 'Fan 1',
+    parentId: null,
+    locationId: 5
+  });
 
   await knex('equipment_links').insert({
     parentId: ODU[0],

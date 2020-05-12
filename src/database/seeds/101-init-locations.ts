@@ -1,7 +1,9 @@
 import * as Knex from 'knex';
 
 export async function seed(knex: Knex): Promise<any> {
-
+  if(process.env.NODE_ENV==='production'){
+    return null;
+  }
   await knex('locations').del();
   await knex('location_links').del();
   const building = await knex('locations').insert({
