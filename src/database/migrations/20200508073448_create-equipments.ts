@@ -7,6 +7,7 @@ export async function up(knex: Knex) {
     // this creates an "id" column that gets autoincremented
     t.increments();
     t.string('name').notNullable();
+    t.string('classId').notNullable();
     t.integer('parentId').unsigned();
     t.integer('locationId').unsigned().notNullable();
     t.json('meta');
@@ -15,6 +16,7 @@ export async function up(knex: Knex) {
     // Constraints
     t.foreign('parentId').references('equipments.id').onDelete('CASCADE');
     t.foreign('locationId').references('locations.id').onDelete('CASCADE');
+    t.foreign('classId').references('equipmentClasses.id').onDelete('RESTRICT');
 
   });
 }
