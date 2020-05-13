@@ -29,3 +29,12 @@ export class UpdateDto {
   @IsOptional()
   meta: 'json';
 }
+
+
+export class FindDto {
+  @IsOptional()
+  classId: string;
+
+  @IsOptional()
+  parentId: number;
+}

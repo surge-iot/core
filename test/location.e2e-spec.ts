@@ -53,6 +53,30 @@ describe('LocationController (e2e)', () => {
       });
   });
 
+
+  // Be sure to seed the db first
+  it('/api/location/?parentId=1 (GET) should return children of 1', async () => {
+    const response = await request(app.getHttpServer()).get('/api/location/?parentId=1').
+      set('Accept', 'application/json');
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject(
+      [
+        {
+          "id": 2,
+          "name": "Floor 1",
+          "classId": "FLOOR",
+          "parentId": 1,
+        },
+        {
+          "id": 3,
+          "name": "Wing 1",
+          "classId": "WING",
+          "parentId": 1,
+        }
+      ]);
+  });
+
+
   it('/api/location/4 (PUT) should update', async () => {
     const response = await request(app.getHttpServer()).put('/api/location/4').
       send({

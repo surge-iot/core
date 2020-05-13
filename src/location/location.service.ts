@@ -1,11 +1,17 @@
 import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { LocationModel } from '../database/models/location.model';
 import { ModelClass } from 'objection';
-import { CreateDto, UpdateDto } from './location.dto';
+import { CreateDto, UpdateDto, FindDto } from './location.dto';
 
 @Injectable()
 export class LocationService {
   constructor(@Inject('LocationModel') private modelClass: ModelClass<LocationModel>) { }
+
+  async findAll(filters: Partial<FindDto>): Promise<LocationModel[]> {
+  return this.modelClass.query()
+      .where(filters);
+  }
+
 
   async findById(id: number) {
     return this.modelClass.query()
