@@ -9,9 +9,10 @@ import { EquipmentModule } from './equipment/equipment.module';
 import { PointModule } from './point/point.module';
 import { LocationClassModule } from './location-class/location-class.module';
 import { EquipmentClassModule } from './equipment-class/equipment-class.module';
+import { PointClassModule } from './point-class/point-class.module';
 
 @Module({
-  imports: [DatabaseModule, UserModule, AuthModule, LocationModule, EquipmentModule, PointModule, LocationClassModule, EquipmentClassModule],
+  imports: [DatabaseModule, UserModule, AuthModule, LocationModule, EquipmentModule, PointModule, LocationClassModule, EquipmentClassModule, PointClassModule],
   controllers: [AppController],
   providers: [AppService],
 })

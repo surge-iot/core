@@ -1,13 +1,13 @@
 import { Inject, Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ModelClass, transaction } from 'objection';
-import { LocationClassModel } from '../database/models/location-class.model';
-import { CreateDto, FindDto } from './location-class.dto';
+import { PointClassModel } from '../database/models/point-class.model';
+import { CreateDto, FindDto } from './point-class.dto';
 
 @Injectable()
-export class LocationClassService {
-  constructor(@Inject('LocationClassModel') private modelClass: ModelClass<LocationClassModel>) { }
+export class PointClassService {
+  constructor(@Inject('PointClassModel') private modelClass: ModelClass<PointClassModel>) { }
 
-  async findAll(filters: Partial<FindDto>): Promise<LocationClassModel[]> {
+  async findAll(filters: Partial<FindDto>): Promise<PointClassModel[]> {
     return this.modelClass.query()
       .where(filters);
   }
@@ -16,7 +16,7 @@ export class LocationClassService {
     return this.modelClass.query().findById(id);
   }
 
-  async create(props: Partial<CreateDto>): Promise<LocationClassModel> {
+  async create(props: Partial<CreateDto>): Promise<PointClassModel> {
     const id = `${props.parentId || ''}.${props.name.toUpperCase().replace(/\s/g, "")}`;
     return this.modelClass
       .query()
