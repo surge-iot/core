@@ -9,17 +9,13 @@ export class EquipmentService {
 
   async findAll(filters: Partial<FindDto>): Promise<EquipmentModel[]> {
     return this.modelClass.query()
-    .where(filters);
+      .where(filters);
   }
 
   async findById(id: number) {
-    const equipment = await this.modelClass.query()
+    return this.modelClass.query()
       .findById(id)
-      .withGraphFetched('[children, links, location, points.[command,setpoint]]');
-    if (!equipment) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-    return equipment;
+      .withGraphFetched('[children, links, location, points]');
   }
 
   async create(props: Partial<CreateDto>): Promise<EquipmentModel> {
@@ -29,49 +25,37 @@ export class EquipmentService {
   }
 
   async update(id: number, props: Partial<UpdateDto>) {
-    const equipment = await this.modelClass
+    return this.modelClass
       .query()
       .patchAndFetchById(id, props)
-    if (!equipment) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-    return equipment;
   }
 
   async delete(id: number) {
-    const equipment = await this.modelClass
+    return this.modelClass
       .query()
-      .delete()
-      .where({ id })
-      .first();
-    if (!equipment) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-    return equipment;
+      .deleteById(id)
   }
 
-  async addLink(id: number, linkId: number): Promise<EquipmentModel> {
-    await this.findById(id);
-    await this.findById(linkId);
-    const affected = await this.modelClass.relatedQuery('links')
+  async addLink(id: number, linkId: number): Promise<number> {
+    const equipment = await this.modelClass.query().findById(id);
+    const link = await this.modelClass.query().findById(linkId);
+    if (!equipment || !link) {
+      return null;
+    }
+    return this.modelClass.relatedQuery('links')
       .for(id)
       .relate(linkId);
-    if (!affected) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-    return this.findById(id);
   }
 
-  async removeLink(id: number, linkId: number): Promise<EquipmentModel> {
-    await this.findById(id);
-    await this.findById(linkId);
-    const affected = await this.modelClass.relatedQuery('links')
+  async removeLink(id: number, linkId: number): Promise<number> {
+    const equipment = await this.modelClass.query().findById(id);
+    const link = await this.modelClass.query().findById(linkId);
+    if (!equipment || !link) {
+      return null;
+    }
+    return this.modelClass.relatedQuery('links')
       .for(id)
       .unrelate()
       .where('equipmentId', linkId);
-    if (!affected) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
-    }
-    return this.findById(id);
   }
 }

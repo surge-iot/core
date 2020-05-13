@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Body, Param, ParseIntPipe, Put, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { LocationService } from './location.service';
-import { LocationModel } from '../database/models/location.model';
 import { CreateDto, UpdateDto } from './location.dto';
 
 @Controller('location')
@@ -9,7 +8,11 @@ export class LocationController {
 
   @Get(':id')
   async findById(@Param('id', new ParseIntPipe()) id: number) {
-    return this.locationService.findById(id);
+    const location = await this.locationService.findById(id);
+    if (!location) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return location;
   }
 
   @Post()
@@ -22,29 +25,40 @@ export class LocationController {
     @Param('id', new ParseIntPipe()) id: number,
     @Body() props: UpdateDto
   ) {
-    return this.locationService.update(id, props);
+    const location = await this.locationService.update(id, props);
+    if (!location) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return location;
   }
 
   @Delete(':id')
   async delete(@Param('id', new ParseIntPipe()) id: number) {
-    return this.locationService.delete(id);
-  }
-
-  @Put(':id/change-parent/:newParentId')
-  async changeParent(@Param('id', new ParseIntPipe()) id: number,
-    @Param('newParentId', new ParseIntPipe()) newParentId: number) {
-    return this.locationService.changeParent(id, newParentId);
+    const affected = await this.locationService.delete(id);
+    if (!affected) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return affected;
   }
 
   @Put(':id/add-link/:linkId')
   async addLink(@Param('id', new ParseIntPipe()) id: number,
     @Param('linkId', new ParseIntPipe()) linkId: number) {
-      return this.locationService.addLink(id, linkId);
+    const affected = await this.locationService.addLink(id, linkId);
+    console.log(affected)
+    if (!affected) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return affected;
   }
 
   @Delete(':id/remove-link/:linkId')
   async removeLink(@Param('id', new ParseIntPipe()) id: number,
     @Param('linkId', new ParseIntPipe()) linkId: number) {
-      return this.locationService.removeLink(id, linkId);
+    const affected = await this.locationService.removeLink(id, linkId);
+    if (!affected) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return affected;
   }
 }

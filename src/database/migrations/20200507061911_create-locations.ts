@@ -7,11 +7,13 @@ export async function up(knex: Knex) {
     // this creates an "id" column that gets autoincremented
     t.increments();
     t.string('name').notNullable();
+    t.string('classId').notNullable();
     t.integer('parentId').unsigned();
     t.json('meta');
     t.timestamps(true, true);
 
     // Constraints
+    t.foreign('classId').references('locationClasses.id').onDelete('RESTRICT').onUpdate('CASCADE');
     t.foreign('parentId').references('locations.id').onDelete('CASCADE');
   });
 }

@@ -1,16 +1,27 @@
 import { BaseModel } from './base.model';
 import { Model } from 'objection';
 import { LocationModel } from './location.model';
+import { EquipmentClassModel } from './equipment-class.model';
 
 export class EquipmentModel extends BaseModel {
   static tableName = 'equipments';
 
   name: string;
+  classId: string;
   parentId: number;
   locationId: number;
   meta: 'json';
 
   static relationMappings = {
+    class: {
+      relation: Model.BelongsToOneRelation,
+      modelClass: EquipmentClassModel,
+      join: {
+        from: 'equipments.classId',
+        to: 'equipmentClasses.id'
+      }
+    },
+
     parent: {
       relation: Model.BelongsToOneRelation,
       modelClass: EquipmentModel,
@@ -52,18 +63,18 @@ export class EquipmentModel extends BaseModel {
       }
     },
 
-    points:{ 
+    points: {
       relation: Model.HasManyRelation,
-      modelClass:  __dirname + '/point.model',
+      modelClass: __dirname + '/point.model',
       join: {
         from: 'equipments.id',
         to: 'points.equipmentId'
       }
     },
 
-    commandsForEquipment:{ 
+    commandsForEquipment: {
       relation: Model.ManyToManyRelation,
-      modelClass:  __dirname + '/command.model',
+      modelClass: __dirname + '/command.model',
       join: {
         from: 'equipments.id',
         through: {
@@ -78,11 +89,12 @@ export class EquipmentModel extends BaseModel {
 
   static jsonSchema = {
     type: 'object',
-    required: ['name', 'locationId'],
+    required: ['name', 'classId', 'locationId'],
 
     properties: {
       id: { type: 'integer' },
       name: { type: 'string' },
+      classId: { type: 'string' },
       locationId: { type: 'number' },
       parentId: { type: 'number' },
       createdAt: {

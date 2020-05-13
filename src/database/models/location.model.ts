@@ -1,14 +1,25 @@
 import { BaseModel } from './base.model';
 import { Model } from 'objection';
+import { LocationClassModel } from './location-class.model';
 
 export class LocationModel extends BaseModel {
   static tableName = 'locations';
 
   name: string;
+  classId: string;
   parentId: number;
   meta: 'json';
 
   static relationMappings = {
+    class: {
+      relation: Model.BelongsToOneRelation,
+      modelClass: LocationClassModel,
+      join: {
+        from: 'locations.classId',
+        to: 'locationClasses.id'
+      }
+    },
+
     parent: {
       relation: Model.BelongsToOneRelation,
       modelClass: LocationModel,
@@ -44,11 +55,13 @@ export class LocationModel extends BaseModel {
 
   static jsonSchema = {
     type: 'object',
-    required: ['name'],
+    required: ['name', 'classId'],
 
     properties: {
       id: { type: 'integer' },
       name: { type: 'string' },
+      classId: { type: 'string' },
+      parentId: { type: 'number' },
       createdAt: {
         type: 'string',
         format: 'date-time'

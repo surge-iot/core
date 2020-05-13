@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Post, Put, Body, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, Put, Body, Delete, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { EquipmentService } from './equipment.service';
 import { CreateDto, FindDto, UpdateDto } from './equipment.dto';
 
@@ -13,7 +13,11 @@ export class EquipmentController {
 
   @Get(':id')
   async findById(@Param('id', new ParseIntPipe()) id: number) {
-    return this.equipmentService.findById(id);
+    const equipment = await this.equipmentService.findById(id);
+    if (!equipment) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return equipment;
   }
 
   @Post()
@@ -26,23 +30,39 @@ export class EquipmentController {
     @Param('id', new ParseIntPipe()) id: number,
     @Body() props: UpdateDto
   ) {
-    return this.equipmentService.update(id, props);
+    const equipment = await this.equipmentService.update(id, props);
+    if (!equipment) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return equipment;
   }
 
   @Delete(':id')
   async delete(@Param('id', new ParseIntPipe()) id: number) {
-    return this.equipmentService.delete(id);
+    const affected = await this.equipmentService.delete(id);
+    if (!affected) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return affected;
   }
 
   @Put(':id/add-link/:linkId')
   async addLink(@Param('id', new ParseIntPipe()) id: number,
     @Param('linkId', new ParseIntPipe()) linkId: number) {
-      return this.equipmentService.addLink(id, linkId);
+      const affected = await this.equipmentService.addLink(id, linkId);
+      if (!affected) {
+        throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
+      }
+      return affected;
   }
 
   @Delete(':id/remove-link/:linkId')
   async removeLink(@Param('id', new ParseIntPipe()) id: number,
     @Param('linkId', new ParseIntPipe()) linkId: number) {
-      return this.equipmentService.removeLink(id, linkId);
+      const affected = await this.equipmentService.removeLink(id, linkId);
+      if (!affected) {
+        throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
+      }
+      return affected;
   }
 }

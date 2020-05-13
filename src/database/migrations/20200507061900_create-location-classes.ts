@@ -1,13 +1,16 @@
 import * as Knex from 'knex';
 
-const tableName = 'commandTypes';
+const tableName = 'locationClasses';
 
 export async function up(knex: Knex) {
   return knex.schema.createTable(tableName, t => {
-    // this creates an "id" column that gets autoincremented
-    t.string('id').primary();
-    t.string('name');
+    t.string('id').primary(); 
+    t.string('name').notNullable();
+    t.string('parentId');
     t.timestamps(true, true);
+
+    // Constraints
+    t.foreign('parentId').references('locationClasses.id').onDelete('CASCADE');
   });
 }
 

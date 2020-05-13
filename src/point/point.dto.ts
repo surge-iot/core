@@ -3,21 +3,24 @@ import { PointModel } from '../database/models/point.model';
 import { Type } from 'class-transformer';
 
 export class CreateDto {
+
   @IsNotEmpty()
-  commandTypeId: string;
+  classId: string;
+
+  @IsNotEmpty()
+  locationId: number;
+
+  @IsOptional()
+  equipmentId: number;
 
   @IsOptional()
   meta: 'json';
-
-  @IsNotEmpty()
-  @ValidateNested()
-  @Type(() => PointModel)
-  point: PointModel;
 }
 
 export class FindDto{
+
   @IsOptional()
-  commandTypeId: string;
+  classId: string;
 
   @IsOptional()
   locationId: number;
@@ -34,14 +37,16 @@ export class FindDto{
 
 
 export class UpdateDto {
+
   @IsOptional()
-  commandTypeId: string;
+  classId: string;
+
+  @IsOptional()
+  locationId: number;
+
+  @IsOptional()
+  equipmentId: number;
 
   @IsOptional()
   meta: 'json';
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => PointModel)
-  point: PointModel;
 }

@@ -4,16 +4,17 @@ export class CreateDto {
   @IsNotEmpty()
   name: string;
 
-  @IsOptional()
-  meta: 'json';
+  @IsNotEmpty()
+  classId: string
 
   @IsNotEmpty()
-  @IsPositive()
   locationId: number
 
   @IsOptional()
-  @IsPositive()
   parentId: number
+  
+  @IsOptional()
+  meta: 'json';
 }
 
 export class UpdateDto {
@@ -21,19 +22,26 @@ export class UpdateDto {
   name: string;
 
   @IsOptional()
-  meta: 'json';
+  classId: string
 
   @IsOptional()
-  @IsPositive()
   locationId: number
 
   @IsOptional()
-  @IsPositive()
   parentId: number
+
+  @IsOptional()
+  meta: 'json';
 }
 
 export class FindDto {
-  @IsNotEmpty()
-  locationId: number;
+  @IsOptional()
+  classId: string
+
+  @IsOptional()
+  locationId: number
+
+  @IsOptional()
+  parentId: number
 }
 
