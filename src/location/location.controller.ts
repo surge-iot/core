@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Body, Param, ParseIntPipe, Put, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { LocationService } from './location.service';
-import { LocationModel } from '../database/models/location.model';
 import { CreateDto, UpdateDto } from './location.dto';
 
 @Controller('location')
@@ -9,7 +8,7 @@ export class LocationController {
 
   @Get(':id')
   async findById(@Param('id', new ParseIntPipe()) id: number) {
-    const location = this.locationService.findById(id);
+    const location = await this.locationService.findById(id);
     if (!location) {
       throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
     }
@@ -26,7 +25,7 @@ export class LocationController {
     @Param('id', new ParseIntPipe()) id: number,
     @Body() props: UpdateDto
   ) {
-    const location = this.locationService.update(id, props);
+    const location = await this.locationService.update(id, props);
     if (!location) {
       throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
     }
@@ -35,7 +34,7 @@ export class LocationController {
 
   @Delete(':id')
   async delete(@Param('id', new ParseIntPipe()) id: number) {
-    const affected = this.locationService.delete(id);
+    const affected = await this.locationService.delete(id);
     if (!affected) {
       throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
     }
