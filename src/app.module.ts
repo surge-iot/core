@@ -6,11 +6,10 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { LocationModule } from './location/location.module';
 import { EquipmentModule } from './equipment/equipment.module';
-import { SensorModule } from './sensor/sensor.module';
-import { CommandModule } from './command/command.module';
+import { PointModule } from './point/point.module';
 
 @Module({
-  imports: [DatabaseModule, UserModule, AuthModule, LocationModule, EquipmentModule, SensorModule, CommandModule],
+  imports: [DatabaseModule, UserModule, AuthModule, LocationModule, EquipmentModule, PointModule],
   controllers: [AppController],
   providers: [AppService],
 })

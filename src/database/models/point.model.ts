@@ -38,6 +38,32 @@ export class PointModel extends BaseModel {
         to: 'equipments.id'
       }
     },
+
+    pointOfLocations: {
+      relation: Model.ManyToManyRelation,
+      modelClass: LocationModel,
+      join: {
+        from: 'points.id',
+        through: {
+          from: 'pointOfLocations.pointId',
+          to: 'pointOfLocations.locationId'
+        },
+        to: 'locations.id'
+      }
+    },
+
+    pointOfEquipments: {
+      relation: Model.ManyToManyRelation,
+      modelClass: EquipmentModel,
+      join: {
+        from: 'points.id',
+        through: {
+          from: 'pointOfEquipments.pointId',
+          to: 'pointOfEquipments.equipmentId'
+        },
+        to: 'equipments.id'
+      }
+    }
   };
 
   static jsonSchema = {

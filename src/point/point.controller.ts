@@ -1,37 +1,37 @@
 import { Controller, Get, Query, Body, Post, Param, ParseIntPipe, Delete, HttpException, HttpStatus, Put } from '@nestjs/common';
-import { SensorService } from './sensor.service';
-import { CreateDto, FindDto, UpdateDto } from './sensor.dto';
+import { PointService } from './point.service';
+import { CreateDto, FindDto, UpdateDto } from './point.dto';
 
-@Controller('sensor')
-export class SensorController {
-  constructor(private sensorService: SensorService) { }
+@Controller('point')
+export class PointController {
+  constructor(private pointService: PointService) { }
 
   @Get()
   async findAll(@Query() filters: FindDto) {
-    return this.sensorService.findAll(filters);
+    return this.pointService.findAll(filters);
   }
 
   @Post()
   async create(@Body() props: CreateDto) {
-    return this.sensorService.create(props);
+    return this.pointService.create(props);
   }
 
   @Get(':id')
   async findById(@Param('id', new ParseIntPipe()) id: number) {
-    const sensor = await this.sensorService.findById(id);
-    if (!sensor) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    const point = await this.pointService.findById(id);
+    if (!point) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
     }
-    return sensor;
+    return point;
   }
 
   @Delete(':id')
   async delete(@Param('id', new ParseIntPipe()) id: number) {
-    const sensor = await this.sensorService.delete(id);
-    if (!sensor) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    const point = await this.pointService.delete(id);
+    if (!point) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
     }
-    return sensor;
+    return point;
   }
 
   @Put(':id')
@@ -39,20 +39,20 @@ export class SensorController {
     @Param('id', new ParseIntPipe()) id: number,
     @Body() props: UpdateDto
   ) {
-    const sensor = this.sensorService.update(id, props);
-    if (!sensor) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+    const point = await this.pointService.update(id, props);
+    if (!point) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
     }
-    return sensor;
+    return point;
   }
 
 
   @Put(':id/add-point-of-location/:locationId')
   async addPointOfLocation(@Param('id', new ParseIntPipe()) id: number,
     @Param('locationId', new ParseIntPipe()) locationId: number) {
-    const affected = await this.sensorService.addPointOfLocation(id, locationId);
+    const affected = await this.pointService.addPointOfLocation(id, locationId);
     if (!affected) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
     }
     return affected;
   }
@@ -60,9 +60,9 @@ export class SensorController {
   @Delete(':id/remove-point-of-location/:locationId')
   async removePointOfLocation(@Param('id', new ParseIntPipe()) id: number,
     @Param('locationId', new ParseIntPipe()) locationId: number) {
-    const affected = await this.sensorService.removePointOfLocation(id, locationId);
+    const affected = await this.pointService.removePointOfLocation(id, locationId);
     if (!affected) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
     }
     return affected;
   }
@@ -71,9 +71,9 @@ export class SensorController {
   @Put(':id/add-point-of-equipment/:equipmentId')
   async addPointOfEquipment(@Param('id', new ParseIntPipe()) id: number,
     @Param('equipmentId', new ParseIntPipe()) equipmentId: number) {
-    const affected = await this.sensorService.addPointOfEquipment(id, equipmentId);
+    const affected = await this.pointService.addPointOfEquipment(id, equipmentId);
     if (!affected) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
     }
     return affected;
   }
@@ -81,9 +81,9 @@ export class SensorController {
   @Delete(':id/remove-point-of-equipment/:equipmentId')
   async removePointOfEquipment(@Param('id', new ParseIntPipe()) id: number,
     @Param('equipmentId', new ParseIntPipe()) equipmentId: number) {
-    const affected = await this.sensorService.removePointOfEquipment(id, equipmentId);
+    const affected = await this.pointService.removePointOfEquipment(id, equipmentId);
     if (!affected) {
-      throw new HttpException('Resource not found', HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
     }
     return affected;
   }

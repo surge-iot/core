@@ -2,14 +2,21 @@ import { Global, Module } from '@nestjs/common';
 import * as Knex from 'knex';
 import { Model } from 'objection';
 import { UserModel } from './models/user.model';
-import  * as config from '../../knexfile' ;
+import * as config from '../../knexfile';
 import { LocationModel } from './models/location.model';
 import { EquipmentModel } from './models/equipment.model';
-import { SensorModel } from './models/sensor.model';
 import { PointModel } from './models/point.model';
-import { CommandModel } from './models/command.model';
-import { SetpointModel } from './models/setpoint.model';
-const models = [UserModel, LocationModel, EquipmentModel, PointModel, SensorModel, CommandModel, SetpointModel];
+import { LocationClassModel } from './models/location-class.model';
+import { EquipmentClassModel } from './models/equipment-class.model';
+import { PointClassModel } from './models/point-class.model';
+const models = [UserModel,
+  LocationClassModel,
+  EquipmentClassModel,
+  PointClassModel,
+  LocationModel,
+  EquipmentModel,
+  PointModel
+];
 
 const modelProviders = models.map(model => {
   return {
@@ -36,4 +43,4 @@ const providers = [
   providers: [...providers],
   exports: [...providers]
 })
-export class DatabaseModule {}
+export class DatabaseModule { }

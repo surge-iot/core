@@ -33,29 +33,64 @@ describe('EquipmentController (e2e)', () => {
       {
         "id": 2,
         "name": "AC 1",
+        "classId": "HVAC.TERMINALUNIT",
         "parentId": null,
         "locationId": 5,
         "children": [
           {
             "id": 3,
             "name": "AC 1 blower",
+            "classId": "HVAC.TERMINALUNIT.FANCOILUNIT",
             "parentId": 2,
             "locationId": 5,
           },
           {
             "id": 4,
             "name": "AC 1 compressor",
+            "classId": "HVAC.PUMP",
             "parentId": 2,
             "locationId": 5,
           }
         ],
-        "links": [],
         "location": {
           "id": 5,
           "name": "Room 2",
+          "classId": "ROOM",
           "parentId": 2,
-          "meta": null,
-        }
+        },
+        "links": [],
+        "points": [
+          {
+            "id": 3,
+            "classId": "SENSOR.THI.TEMPERATURE",
+            "locationId": 5,
+            "equipmentId": 2,
+          },
+          {
+            "id": 4,
+            "classId": "COMMAND.SWITCH",
+            "locationId": 5,
+            "equipmentId": 2,
+          },
+          {
+            "id": 5,
+            "classId": "COMMAND.TEMPERATURE",
+            "locationId": 5,
+            "equipmentId": 2,
+          },
+          {
+            "id": 8,
+            "classId": "SETPOINT.SWITCH",
+            "locationId": 5,
+            "equipmentId": 2,
+          },
+          {
+            "id": 9,
+            "classId": "SETPOINT.TEMPERATURE",
+            "locationId": 5,
+            "equipmentId": 2,
+          }
+        ]
       });
   });
 
@@ -69,8 +104,9 @@ describe('EquipmentController (e2e)', () => {
         {
           "id": 1,
           "name": "ODU",
+          "classId": "HVAC.ODU",
           "parentId": null,
-          "locationId": 1,
+          "locationId": 1
         }
       ]);
   });
@@ -85,6 +121,23 @@ describe('EquipmentController (e2e)', () => {
   });
 
 
+  it('/api/equipment/1/add-link/20 (PUT) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).put('/api/equipment/1/add-link/20').
+      set('Accept', 'application/json');
+    expect(response.status).toBe(422);
+  });
+
+  it('/api/equipment/10/add-link/2 (PUT) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).put('/api/equipment/10/add-link/2').
+      set('Accept', 'application/json');
+    expect(response.status).toBe(422);
+  });
+
+  it('/api/equipment/1/add-link/2 (PUT) should add link', async () => {
+    const response = await request(app.getHttpServer()).put('/api/equipment/1/add-link/2').
+      set('Accept', 'application/json');
+    expect(response.status).toBe(200);
+  });
 
 
   it('/api/equipment/10/remove-link/2 (DELETE) should not be processable', async () => {
@@ -111,30 +164,11 @@ describe('EquipmentController (e2e)', () => {
     expect(response.status).toBe(200);
   });
 
-  it('/api/equipment/1/add-link/20 (PUT) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).put('/api/equipment/1/add-link/20').
-      set('Accept', 'application/json');
-    expect(response.status).toBe(422);
-  });
 
-  it('/api/equipment/10/add-link/2 (PUT) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).put('/api/equipment/10/add-link/2').
-      set('Accept', 'application/json');
-    expect(response.status).toBe(422);
-  });
-
-  it('/api/equipment/1/add-link/2 (PUT) should add link', async () => {
-    const response = await request(app.getHttpServer()).put('/api/equipment/1/add-link/2').
-      set('Accept', 'application/json');
-    expect(response.status).toBe(200);
-  });
-
-
-
-  it('/api/equipment/ (POST) without name should fail', async () => {
+  it('/api/equipment/ (POST) without location should fail', async () => {
     const response = await request(app.getHttpServer()).post('/api/equipment').
       send({
-        "locationId": 1
+        "name": 'Fan 2'
       }).
       set('Accept', 'application/json');
     expect(response.status).toBe(400);
@@ -145,7 +179,8 @@ describe('EquipmentController (e2e)', () => {
     const response = await request(app.getHttpServer()).post('/api/equipment').
       send({
         "name": "Fan 2",
-        "locationId": 5
+        "locationId": 5, 
+        "classId": 'FAN.CEILINGFAN'
       }).
       set('Accept', 'application/json');
     expect(response.status).toBe(201);
