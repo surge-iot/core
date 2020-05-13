@@ -20,6 +20,11 @@ export class LocationController {
     return location;
   }
 
+  @Get(':id/path')
+  async path(@Param('id', new ParseIntPipe()) id: number) {
+    return this.locationService.path(id);
+  }
+
   @Post()
   async create(@Body() props: CreateDto) {
     return this.locationService.create(props);

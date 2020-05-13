@@ -8,15 +8,28 @@ export class LocationService {
   constructor(@Inject('LocationModel') private modelClass: ModelClass<LocationModel>) { }
 
   async findAll(filters: Partial<FindDto>): Promise<LocationModel[]> {
-  return this.modelClass.query()
-      .where(filters);
+    if (Object.keys(filters).length === 0) {
+      filters = { parentId: null };
+    }
+    return this.modelClass.query()
+      .where(filters)
+      .withGraphFetched('children');
   }
-
 
   async findById(id: number) {
     return this.modelClass.query()
       .findById(id)
       .withGraphFetched('[children, links]');
+  }
+
+  async path(id: number): Promise<LocationModel[]> {
+    let path = [];
+    while (id) {
+      let location = await this.modelClass.query().findById(id);
+      path.push(location);
+      id = location.parentId;
+    }
+    return path;
   }
 
   async create(props: Partial<CreateDto>): Promise<LocationModel> {
