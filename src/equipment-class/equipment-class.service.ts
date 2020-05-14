@@ -17,7 +17,7 @@ export class EquipmentClassService {
   }
 
   async create(props: Partial<CreateDto>): Promise<EquipmentClassModel> {
-    const id = `${props.parentId || ''}.${props.name.toUpperCase().replace(/\s/g, "")}`;
+    const id = `${props.parentId? props.parentId+'.' : ''}${props.name.toUpperCase().replace(/\s/g, "")}`;
     return this.modelClass
       .query()
       .insert({id, ...props});

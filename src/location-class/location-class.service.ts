@@ -17,7 +17,7 @@ export class LocationClassService {
   }
 
   async create(props: Partial<CreateDto>): Promise<LocationClassModel> {
-    const id = `${props.parentId || ''}.${props.name.toUpperCase().replace(/\s/g, "")}`;
+    const id = `${props.parentId? props.parentId+'.' : ''}${props.name.toUpperCase().replace(/\s/g, "")}`;
     return this.modelClass
       .query()
       .insert({id, ...props});
