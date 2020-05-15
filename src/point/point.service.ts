@@ -22,6 +22,7 @@ export class PointService {
       .andWhere('pointOfLocations.id', filters.pointOfLocationId)
       .andWhere('pointOfEquipments.id', filters.pointOfEquipmentId)
       .andWhere('classId', filters.classId)
+      .withGraphFetched('[pointOfLocations, pointOfEquipments]');
   }
 
   async findById(id: number): Promise<PointModel> {

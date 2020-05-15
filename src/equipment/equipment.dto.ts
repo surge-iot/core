@@ -39,9 +39,9 @@ export class FindDto {
   classId: string
 
   @IsOptional()
-  locationId: number
+  locationId: number | 'null'
 
   @IsOptional()
-  parentId: number
+  parentId: number | 'null'
 }
 

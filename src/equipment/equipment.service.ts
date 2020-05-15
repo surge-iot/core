@@ -8,8 +8,14 @@ export class EquipmentService {
   constructor(@Inject('EquipmentModel') private modelClass: ModelClass<EquipmentModel>) { }
 
   async findAll(filters: Partial<FindDto>): Promise<EquipmentModel[]> {
+    if(filters.parentId==='null'){
+      filters.parentId=null;
+    }
+    if(filters.locationId==='null'){
+      filters.locationId=null;
+    }
     return this.modelClass.query()
-      .where(filters);
+      .where(filters).withGraphFetched('[children, links]');
   }
 
   async findById(id: number) {
