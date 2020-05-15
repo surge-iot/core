@@ -8,12 +8,16 @@ export class LocationService {
   constructor(@Inject('LocationModel') private modelClass: ModelClass<LocationModel>) { }
 
   async findAll(filters: Partial<FindDto>): Promise<LocationModel[]> {
-    if (Object.keys(filters).length === 0) {
-      filters = { parentId: null };
+    // if (Object.keys(filters).length === 0) {
+    //   filters = { parentId: null };
+    // }
+    if(filters.parentId==='null'){
+      filters.parentId=null;
     }
+    console.log(filters)
     return this.modelClass.query()
       .where(filters)
-      .withGraphFetched('children');
+      .withGraphFetched('[children, links]');
   }
 
   async findById(id: number) {

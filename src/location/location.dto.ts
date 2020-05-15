@@ -36,5 +36,5 @@ export class FindDto {
   classId: string;
 
   @IsOptional()
-  parentId: number;
+  parentId: number | 'null';
 }
