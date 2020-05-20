@@ -8,7 +8,6 @@ export class EquipmentModel extends BaseModel {
 
   name: string;
   classId: string;
-  parentId: number;
   locationId: number;
   meta: 'json';
 
@@ -22,24 +21,6 @@ export class EquipmentModel extends BaseModel {
       }
     },
 
-    parent: {
-      relation: Model.BelongsToOneRelation,
-      modelClass: EquipmentModel,
-      join: {
-        from: 'equipments.parentId',
-        to: 'equipments.id'
-      }
-    },
-
-    children: {
-      relation: Model.HasManyRelation,
-      modelClass: EquipmentModel,
-      join: {
-        from: 'equipments.id',
-        to: 'equipments.parentId'
-      }
-    },
-
     location: {
       relation: Model.BelongsToOneRelation,
       modelClass: LocationModel,
@@ -49,7 +30,7 @@ export class EquipmentModel extends BaseModel {
       }
     },
 
-    links: {
+    children: {
       relation: Model.ManyToManyRelation,
       modelClass: EquipmentModel,
       join: {
@@ -63,6 +44,20 @@ export class EquipmentModel extends BaseModel {
       }
     },
 
+
+    parents: {
+      relation: Model.ManyToManyRelation,
+      modelClass: EquipmentModel,
+      join: {
+        from: 'equipments.id',
+        through: {
+          // persons_movies is the join table.
+          from: 'equipmentLinks.equipmentId',
+          to: 'equipmentLinks.parentId',
+        },
+        to: 'equipments.id'
+      }
+    },
     points: {
       relation: Model.HasManyRelation,
       modelClass: __dirname + '/point.model',
@@ -72,7 +67,7 @@ export class EquipmentModel extends BaseModel {
       }
     },
 
-    commandsForEquipment: {
+    pointsOfEquipment: {
       relation: Model.ManyToManyRelation,
       modelClass: __dirname + '/command.model',
       join: {

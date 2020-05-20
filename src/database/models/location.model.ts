@@ -7,7 +7,6 @@ export class LocationModel extends BaseModel {
 
   name: string;
   classId: string;
-  parentId: number;
   meta: 'json';
 
   static relationMappings = {
@@ -20,25 +19,7 @@ export class LocationModel extends BaseModel {
       }
     },
 
-    parent: {
-      relation: Model.BelongsToOneRelation,
-      modelClass: LocationModel,
-      join: {
-        from: 'locations.parentId',
-        to: 'locations.id'
-      }
-    },
-
     children: {
-      relation: Model.HasManyRelation,
-      modelClass: LocationModel,
-      join: {
-        from: 'locations.id',
-        to: 'locations.parentId'
-      }
-    },
-
-    links: {
       relation: Model.ManyToManyRelation,
       modelClass: LocationModel,
       join: {
@@ -47,6 +28,20 @@ export class LocationModel extends BaseModel {
           // persons_movies is the join table.
           from: 'locationLinks.parentId',
           to: 'locationLinks.locationId'
+        },
+        to: 'locations.id'
+      }
+    },
+
+    parents: {
+      relation: Model.ManyToManyRelation,
+      modelClass: LocationModel,
+      join: {
+        from: 'locations.id',
+        through: {
+          // persons_movies is the join table.
+          from: 'locationLinks.locationId',
+          to: 'locationLinks.parentId',
         },
         to: 'locations.id'
       }
