@@ -1,9 +1,16 @@
 import * as Knex from 'knex';
 
-export async function seed(knex: Knex): Promise<any> {
+const seedName = '002-init-equipment-classes';
+// eslint-disable-next-line consistent-return
+export async function seed(knex: Knex): Promise<Knex.QueryBuilder | null> {
+  const found = await knex('knex_seeds').where('name', seedName);
+  if (found.length > 0){
+    console.log("Skipping ", seedName);
+    return null;
+  }
   try {
     await knex.transaction(async trx => {
-      await knex('equipmentClasses').del();
+      await knex('knex_seeds').insert({name: seedName});  
       const classes = [
         { id: 'FIRESAFETYSYSTEM', name: 'Fire Safety System', parentId: null},
         { id: 'HVAC', name: 'HVAC', parentId: null},
@@ -24,7 +31,7 @@ export async function seed(knex: Knex): Promise<any> {
 
       const inserts = await trx('equipmentClasses').insert(classes)
 
-      console.log(inserts.length + ' new equipment classes saved.')
+      console.log('new equipment classes saved.')
     })
   } catch (error) {
     // If we get here, that means that neither the 'points' insert,

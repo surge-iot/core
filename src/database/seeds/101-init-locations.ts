@@ -1,14 +1,18 @@
 import * as Knex from 'knex';
-
-export async function seed(knex: Knex): Promise<any> {
+const seedName = '101-init-locations';
+// eslint-disable-next-line consistent-return
+export async function seed(knex: Knex): Promise<Knex.QueryBuilder | null> {
   if (process.env.NODE_ENV === 'production') {
     return null;
   }
-
+  const found = await knex('knex_seeds').where('name', seedName);
+  if (found.length > 0){
+    console.log("Skipping ", seedName);
+    return null;
+  }
   try {
     await knex.transaction(async trx => {
-      await knex('locations').del();
-      await knex('locationLinks').del();
+      await knex('knex_seeds').insert({name: seedName});  
       const locations = [
         { id: 1, name: 'Building', parentId: null, classId: 'BUILDING' },
         { id: 2, name: 'Floor 1', parentId: 1, classId: 'FLOOR' },
@@ -17,14 +21,14 @@ export async function seed(knex: Knex): Promise<any> {
         { id: 5, name: 'Room 2', parentId: 2, classId: 'ROOM' }
       ];
       const inserts = await trx('locations').insert(locations)
-      console.log(inserts.length + ' new locations saved.')
+      console.log('new locations saved.')
 
       const locationLinks = [
         { parentId: 3, locationId: 4 }
       ]
       await trx('locationLinks').insert(locationLinks);
 
-      console.log(inserts.length + ' new location links saved.')
+      console.log('new location links saved.')
     })
   } catch (error) {
     // If we get here, that means that neither the 'points' insert,

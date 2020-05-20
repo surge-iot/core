@@ -1,14 +1,18 @@
 import * as Knex from 'knex';
-
-export async function seed(knex: Knex): Promise<any> {
+const seedName = '102-init-equipments';
+// eslint-disable-next-line consistent-return
+export async function seed(knex: Knex): Promise<Knex.QueryBuilder | null> {
   if (process.env.NODE_ENV === 'production') {
     return null;
   }
-
+  const found = await knex('knex_seeds').where('name', seedName);
+  if (found.length > 0){
+    console.log("Skipping ", seedName);
+    return null;
+  }
   try {
     await knex.transaction(async trx => {
-      await knex('equipments').del();
-      await knex('equipmentLinks').del();
+      await knex('knex_seeds').insert({name: seedName});  
       const equipments = [
         { id: 1, name: 'ODU', parentId: null, locationId: 1, classId: 'HVAC.ODU' },
         { id: 2, name: 'AC 1', parentId: null, locationId: 5, classId: 'HVAC.TERMINALUNIT' },
@@ -18,7 +22,7 @@ export async function seed(knex: Knex): Promise<any> {
       ];
       const inserts = await trx('equipments').insert(equipments)
 
-      console.log(inserts.length + ' new equipments saved.')
+      console.log('new equipments saved.')
     })
   } catch (error) {
     // If we get here, that means that neither the 'points' insert,

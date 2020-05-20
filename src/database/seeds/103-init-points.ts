@@ -1,16 +1,18 @@
 import * as Knex from 'knex';
-
-export async function seed(knex: Knex): Promise<any> {
+const seedName = '103-init-points';
+// eslint-disable-next-line consistent-return
+export async function seed(knex: Knex): Promise<Knex.QueryBuilder | null> {
   if (process.env.NODE_ENV === 'production') {
     return null;
   }
-
+  const found = await knex('knex_seeds').where('name', seedName);
+  if (found.length > 0){
+    console.log("Skipping ", seedName);
+    return null;
+  }
   try {
-    
     await knex.transaction(async trx => {
-      await knex('points').del();
-      await knex('pointOfLocations').del();
-      await knex('pointOfLocations').del();
+      await knex('knex_seeds').insert({name: seedName});  
       const sensors = [
         { id: 1, locationId: 5, equipmentId: null, classId: 'SENSOR.POWER' },
         { id: 2, locationId: 5, equipmentId: null, classId: 'SENSOR.THI.TEMPERATURE' },

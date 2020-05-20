@@ -1,9 +1,16 @@
 import * as Knex from 'knex';
 
-export async function seed(knex: Knex): Promise<any> {
+const seedName = '001-init-location-classes';
+// eslint-disable-next-line consistent-return
+export async function seed(knex: Knex): Promise<Knex.QueryBuilder | null> {
+  const found = await knex('knex_seeds').where('name', seedName);
+  if (found.length > 0){
+    console.log("Skipping ", seedName);
+    return null;
+  }
   try {
     await knex.transaction(async trx => {
-      await knex('locationClasses').del();
+      await knex('knex_seeds').insert({name: seedName});  
       const classes = [
         { id: 'BUILDING', name: 'Building', parentId: null},
         { id: 'FLOOR', name: 'Floor', parentId: null},
@@ -16,7 +23,7 @@ export async function seed(knex: Knex): Promise<any> {
 
       const inserts = await trx('locationClasses').insert(classes)
 
-      console.log(inserts.length + ' new location classes saved.')
+      console.log('new location classes saved.')
     })
   } catch (error) {
     // If we get here, that means that neither the 'points' insert,
