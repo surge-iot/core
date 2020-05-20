@@ -14,17 +14,21 @@ export async function seed(knex: Knex): Promise<Knex.QueryBuilder | null> {
     await knex.transaction(async trx => {
       await knex('knex_seeds').insert({name: seedName});  
       const locations = [
-        { id: 1, name: 'Building', parentId: null, classId: 'BUILDING' },
-        { id: 2, name: 'Floor 1', parentId: 1, classId: 'FLOOR' },
-        { id: 3, name: 'Wing 1', parentId: 1, classId: 'WING' },
-        { id: 4, name: 'Room 1', parentId: 2, classId: 'ROOM' },
-        { id: 5, name: 'Room 2', parentId: 2, classId: 'ROOM' }
+        { id: 1, name: 'Building', classId: 'BUILDING' },
+        { id: 2, name: 'Floor 1', classId: 'FLOOR' },
+        { id: 3, name: 'Wing 1', classId: 'WING' },
+        { id: 4, name: 'Room 1', classId: 'ROOM' },
+        { id: 5, name: 'Room 2', classId: 'ROOM' }
       ];
       const inserts = await trx('locations').insert(locations)
       console.log('new locations saved.')
 
       const locationLinks = [
-        { parentId: 3, locationId: 4 }
+        { parentId: 3, locationId: 4 },
+        { parentId: 1, locationId: 2 },
+        { parentId: 1, locationId: 3 },
+        { parentId: 2, locationId: 4 },
+        { parentId: 2, locationId: 5 },
       ]
       await trx('locationLinks').insert(locationLinks);
 

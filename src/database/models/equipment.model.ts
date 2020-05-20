@@ -11,6 +11,9 @@ export class EquipmentModel extends BaseModel {
   locationId: number;
   meta: 'json';
 
+  children:EquipmentModel[];
+  parents:EquipmentModel[];
+
   static relationMappings = {
     class: {
       relation: Model.BelongsToOneRelation,

@@ -20,11 +20,6 @@ export class LocationController {
     return location;
   }
 
-  @Get(':id/path')
-  async path(@Param('id', new ParseIntPipe()) id: number) {
-    return this.locationService.path(id);
-  }
-
   @Post()
   async create(@Body() props: CreateDto) {
     return this.locationService.create(props);
@@ -51,10 +46,10 @@ export class LocationController {
     return affected;
   }
 
-  @Put(':id/add-link/:linkId')
-  async addLink(@Param('id', new ParseIntPipe()) id: number,
-    @Param('linkId', new ParseIntPipe()) linkId: number) {
-    const affected = await this.locationService.addLink(id, linkId);
+  @Put(':id/add-child/:childId')
+  async addChild(@Param('id', new ParseIntPipe()) id: number,
+    @Param('childId', new ParseIntPipe()) childId: number) {
+    const affected = await this.locationService.addChild(id, childId);
     console.log(affected)
     if (!affected) {
       throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
@@ -62,10 +57,10 @@ export class LocationController {
     return affected;
   }
 
-  @Delete(':id/remove-link/:linkId')
-  async removeLink(@Param('id', new ParseIntPipe()) id: number,
-    @Param('linkId', new ParseIntPipe()) linkId: number) {
-    const affected = await this.locationService.removeLink(id, linkId);
+  @Delete(':id/remove-child/:childId')
+  async removeChild(@Param('id', new ParseIntPipe()) id: number,
+    @Param('childId', new ParseIntPipe()) childId: number) {
+    const affected = await this.locationService.removeChild(id, childId);
     if (!affected) {
       throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
     }

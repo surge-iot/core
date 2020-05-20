@@ -11,9 +11,6 @@ export class CreateDto {
   locationId: number
 
   @IsOptional()
-  parentId: number
-  
-  @IsOptional()
   meta: 'json';
 }
 
@@ -28,9 +25,6 @@ export class UpdateDto {
   locationId: number
 
   @IsOptional()
-  parentId: number
-
-  @IsOptional()
   meta: 'json';
 }
 
@@ -41,7 +35,5 @@ export class FindDto {
   @IsOptional()
   locationId: number | 'null'
 
-  @IsOptional()
-  parentId: number | 'null'
 }
 

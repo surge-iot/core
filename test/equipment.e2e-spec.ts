@@ -34,21 +34,18 @@ describe('EquipmentController (e2e)', () => {
         "id": 2,
         "name": "AC 1",
         "classId": "HVAC.TERMINALUNIT",
-        "parentId": null,
         "locationId": 5,
         "children": [
           {
             "id": 3,
             "name": "AC 1 blower",
             "classId": "HVAC.TERMINALUNIT.FANCOILUNIT",
-            "parentId": 2,
             "locationId": 5,
           },
           {
             "id": 4,
             "name": "AC 1 compressor",
             "classId": "HVAC.PUMP",
-            "parentId": 2,
             "locationId": 5,
           }
         ],
@@ -56,9 +53,8 @@ describe('EquipmentController (e2e)', () => {
           "id": 5,
           "name": "Room 2",
           "classId": "ROOM",
-          "parentId": 2,
         },
-        "links": [],
+        "parents": [],
         "points": [
           {
             "id": 3,
@@ -105,8 +101,8 @@ describe('EquipmentController (e2e)', () => {
           "id": 1,
           "name": "ODU",
           "classId": "HVAC.ODU",
-          "parentId": null,
-          "locationId": 1
+          "locationId": 1,
+          "children": []
         }
       ]);
   });
@@ -121,45 +117,45 @@ describe('EquipmentController (e2e)', () => {
   });
 
 
-  it('/api/equipment/1/add-link/20 (PUT) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).put('/api/equipment/1/add-link/20').
+  it('/api/equipment/1/add-child/20 (PUT) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).put('/api/equipment/1/add-child/20').
       set('Accept', 'application/json');
     expect(response.status).toBe(422);
   });
 
-  it('/api/equipment/10/add-link/2 (PUT) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).put('/api/equipment/10/add-link/2').
+  it('/api/equipment/10/add-child/2 (PUT) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).put('/api/equipment/10/add-child/2').
       set('Accept', 'application/json');
     expect(response.status).toBe(422);
   });
 
-  it('/api/equipment/1/add-link/2 (PUT) should add link', async () => {
-    const response = await request(app.getHttpServer()).put('/api/equipment/1/add-link/2').
+  it('/api/equipment/1/add-child/2 (PUT) should add child', async () => {
+    const response = await request(app.getHttpServer()).put('/api/equipment/1/add-child/2').
       set('Accept', 'application/json');
     expect(response.status).toBe(200);
   });
 
 
-  it('/api/equipment/10/remove-link/2 (DELETE) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).delete('/api/equipment/10/remove-link/2').
+  it('/api/equipment/10/remove-child/2 (DELETE) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).delete('/api/equipment/10/remove-child/2').
       set('Accept', 'application/json');
     expect(response.status).toBe(422);
   });
 
-  it('/api/equipment/1/remove-link/20 (DELETE) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).delete('/api/equipment/1/remove-link/20').
+  it('/api/equipment/1/remove-child/20 (DELETE) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).delete('/api/equipment/1/remove-child/20').
       set('Accept', 'application/json');
     expect(response.status).toBe(422);
   });
 
-  it('/api/equipment/1/remove-link/3 (DELETE) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).delete('/api/equipment/1/remove-link/3').
+  it('/api/equipment/1/remove-child/3 (DELETE) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).delete('/api/equipment/1/remove-child/3').
       set('Accept', 'application/json');
     expect(response.status).toBe(422);
   });
 
-  it('/api/equipment/1/remove-link/2 (DELETE) should remove link', async () => {
-    const response = await request(app.getHttpServer()).delete('/api/equipment/1/remove-link/2').
+  it('/api/equipment/1/remove-child/2 (DELETE) should remove child', async () => {
+    const response = await request(app.getHttpServer()).delete('/api/equipment/1/remove-child/2').
       set('Accept', 'application/json');
     expect(response.status).toBe(200);
   });
@@ -179,7 +175,7 @@ describe('EquipmentController (e2e)', () => {
     const response = await request(app.getHttpServer()).post('/api/equipment').
       send({
         "name": "Fan 2",
-        "locationId": 5, 
+        "locationId": 5,
         "classId": 'FAN.CEILINGFAN'
       }).
       set('Accept', 'application/json');

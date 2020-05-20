@@ -8,10 +8,6 @@ export class CreateDto {
   classId: string;
 
   @IsOptional()
-  @IsPositive()
-  parentId: number
-
-  @IsOptional()
   meta: 'json';
 }
 
@@ -23,10 +19,6 @@ export class UpdateDto {
   classId: string;
 
   @IsOptional()
-  @IsPositive()
-  parentId: number
-
-  @IsOptional()
   meta: 'json';
 }
 
@@ -34,7 +26,4 @@ export class UpdateDto {
 export class FindDto {
   @IsOptional()
   classId: string;
-
-  @IsOptional()
-  parentId: number | 'null';
 }

@@ -9,6 +9,9 @@ export class LocationModel extends BaseModel {
   classId: string;
   meta: 'json';
 
+  children: LocationModel[];
+  parents: LocationModel[];
+
   static relationMappings = {
     class: {
       relation: Model.BelongsToOneRelation,

@@ -8,20 +8,17 @@ export class EquipmentService {
   constructor(@Inject('EquipmentModel') private modelClass: ModelClass<EquipmentModel>) { }
 
   async findAll(filters: Partial<FindDto>): Promise<EquipmentModel[]> {
-    if(filters.parentId==='null'){
-      filters.parentId=null;
-    }
     if(filters.locationId==='null'){
       filters.locationId=null;
     }
     return this.modelClass.query()
-      .where(filters).withGraphFetched('[children, links]');
+      .where(filters).withGraphFetched('[children]');
   }
 
   async findById(id: number) {
     return this.modelClass.query()
       .findById(id)
-      .withGraphFetched('[children, links, location, points]');
+      .withGraphFetched('[children, parents, location, points]');
   }
 
   async create(props: Partial<CreateDto>): Promise<EquipmentModel> {
@@ -42,26 +39,26 @@ export class EquipmentService {
       .deleteById(id)
   }
 
-  async addLink(id: number, linkId: number): Promise<number> {
+  async addChild(id: number, childId: number): Promise<number> {
     const equipment = await this.modelClass.query().findById(id);
-    const link = await this.modelClass.query().findById(linkId);
-    if (!equipment || !link) {
+    const child = await this.modelClass.query().findById(childId);
+    if (!equipment || !child) {
       return null;
     }
-    return this.modelClass.relatedQuery('links')
+    return this.modelClass.relatedQuery('children')
       .for(id)
-      .relate(linkId);
+      .relate(childId);
   }
 
-  async removeLink(id: number, linkId: number): Promise<number> {
+  async removeChild(id: number, childId: number): Promise<number> {
     const equipment = await this.modelClass.query().findById(id);
-    const link = await this.modelClass.query().findById(linkId);
-    if (!equipment || !link) {
+    const child = await this.modelClass.query().findById(childId);
+    if (!equipment || !child) {
       return null;
     }
-    return this.modelClass.relatedQuery('links')
+    return this.modelClass.relatedQuery('children')
       .for(id)
       .unrelate()
-      .where('equipmentId', linkId);
+      .where('equipmentId', childId);
   }
 }

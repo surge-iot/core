@@ -1,10 +1,12 @@
-import {manager} from './db-manager';
+import { manager } from './db-manager';
 
 manager.dropDb().then(() => {
   manager.createDb().then(() => {
     manager.migrateDb().then(() => {
-      console.log("All done");
-      process.exit(0);
+      manager.close().then(() => {
+        console.log("All done");
+        process.exit(0);
+      })
     });
   });
 });

@@ -46,20 +46,20 @@ export class EquipmentController {
     return affected;
   }
 
-  @Put(':id/add-link/:linkId')
-  async addLink(@Param('id', new ParseIntPipe()) id: number,
-    @Param('linkId', new ParseIntPipe()) linkId: number) {
-      const affected = await this.equipmentService.addLink(id, linkId);
+  @Put(':id/add-child/:childId')
+  async addChild(@Param('id', new ParseIntPipe()) id: number,
+    @Param('childId', new ParseIntPipe()) childId: number) {
+      const affected = await this.equipmentService.addChild(id, childId);
       if (!affected) {
         throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
       }
       return affected;
   }
 
-  @Delete(':id/remove-link/:linkId')
-  async removeLink(@Param('id', new ParseIntPipe()) id: number,
-    @Param('linkId', new ParseIntPipe()) linkId: number) {
-      const affected = await this.equipmentService.removeLink(id, linkId);
+  @Delete(':id/remove-child/:childId')
+  async removeChild(@Param('id', new ParseIntPipe()) id: number,
+    @Param('childId', new ParseIntPipe()) childId: number) {
+      const affected = await this.equipmentService.removeChild(id, childId);
       if (!affected) {
         throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
       }

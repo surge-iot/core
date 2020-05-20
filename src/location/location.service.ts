@@ -8,32 +8,15 @@ export class LocationService {
   constructor(@Inject('LocationModel') private modelClass: ModelClass<LocationModel>) { }
 
   async findAll(filters: Partial<FindDto>): Promise<LocationModel[]> {
-    // if (Object.keys(filters).length === 0) {
-    //   filters = { parentId: null };
-    // }
-    if(filters.parentId==='null'){
-      filters.parentId=null;
-    }
-    console.log(filters)
     return this.modelClass.query()
       .where(filters)
-      .withGraphFetched('[children, links]');
+      .withGraphFetched('[children]');
   }
 
   async findById(id: number) {
     return this.modelClass.query()
       .findById(id)
-      .withGraphFetched('[children, links]');
-  }
-
-  async path(id: number): Promise<LocationModel[]> {
-    let path = [];
-    while (id) {
-      let location = await this.modelClass.query().findById(id);
-      path.push(location);
-      id = location.parentId;
-    }
-    return path;
+      .withGraphFetched('[children, parents]');
   }
 
   async create(props: Partial<CreateDto>): Promise<LocationModel> {
@@ -54,26 +37,26 @@ export class LocationService {
       .deleteById(id)
   }
 
-  async addLink(id: number, linkId: number): Promise<number> {
+  async addChild(id: number, childId: number): Promise<number> {
     const location = await this.modelClass.query().findById(id);
-    const link = await this.modelClass.query().findById(linkId);
-    if (!location || !link) {
+    const child = await this.modelClass.query().findById(childId);
+    if (!location || !child) {
       return null;
     }
-    return this.modelClass.relatedQuery('links')
+    return this.modelClass.relatedQuery('children')
       .for(id)
-      .relate(linkId);
+      .relate(childId);
   }
 
-  async removeLink(id: number, linkId: number): Promise<number> {
+  async removeChild(id: number, childId: number): Promise<number> {
     const location = await this.modelClass.query().findById(id);
-    const link = await this.modelClass.query().findById(linkId);
-    if (!location || !link) {
+    const child = await this.modelClass.query().findById(childId);
+    if (!location || !child) {
       return null;
     }
-    return this.modelClass.relatedQuery('links')
+    return this.modelClass.relatedQuery('children')
       .for(id)
       .unrelate()
-      .where('locationId', linkId);
+      .where('locationId', childId);
   }
 }

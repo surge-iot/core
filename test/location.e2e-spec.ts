@@ -34,44 +34,52 @@ describe('LocationController (e2e)', () => {
         "id": 2,
         "name": "Floor 1",
         "classId": "FLOOR",
-        "parentId": 1,
         "children": [
           {
             "id": 4,
             "name": "Room 1",
             "classId": "ROOM",
-            "parentId": 2,
           },
           {
             "id": 5,
             "name": "Room 2",
             "classId": "ROOM",
-            "parentId": 2,
           }
         ],
-        "links": []
+        "parents": [
+          {
+            "id": 1,
+            "name": "Building",
+            "classId": "BUILDING",
+          }
+        ]
       });
   });
 
 
   // Be sure to seed the db first
-  it('/api/location/?parentId=1 (GET) should return children of 1', async () => {
-    const response = await request(app.getHttpServer()).get('/api/location/?parentId=1').
+  it('/api/location/?classId=BUILDING (GET) should return all BUILDINGS', async () => {
+    const response = await request(app.getHttpServer()).get('/api/location/?classId=BUILDING').
       set('Accept', 'application/json');
     expect(response.status).toBe(200);
     expect(response.body).toMatchObject(
       [
         {
-          "id": 2,
-          "name": "Floor 1",
-          "classId": "FLOOR",
-          "parentId": 1,
-        },
-        {
-          "id": 3,
-          "name": "Wing 1",
-          "classId": "WING",
-          "parentId": 1,
+          "id": 1,
+          "name": "Building",
+          "classId": "BUILDING",
+          "children": [
+            {
+              "id": 2,
+              "name": "Floor 1",
+              "classId": "FLOOR",
+            },
+            {
+              "id": 3,
+              "name": "Wing 1",
+              "classId": "WING",
+            }
+          ]
         }
       ]);
   });
@@ -86,46 +94,46 @@ describe('LocationController (e2e)', () => {
     expect(response.status).toBe(200);
   });
 
-  it('/api/location/24/add-link/4 (PUT) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).put('/api/location/24/add-link/4').
+  it('/api/location/24/add-child/4 (PUT) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).put('/api/location/24/add-child/4').
       set('Accept', 'application/json');
     expect(response.status).toBe(422);
   });
 
-  it('/api/location/1/add-link/14 (PUT) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).put('/api/location/1/add-link/14').
+  it('/api/location/1/add-child/14 (PUT) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).put('/api/location/1/add-child/14').
       set('Accept', 'application/json');
     expect(response.status).toBe(422);
   });
 
-  it('/api/location/1/add-link/4 (PUT) should add link', async () => {
-    const response = await request(app.getHttpServer()).put('/api/location/1/add-link/4').
+  it('/api/location/1/add-child/4 (PUT) should add child', async () => {
+    const response = await request(app.getHttpServer()).put('/api/location/1/add-child/4').
       set('Accept', 'application/json');
     expect(response.status).toBe(200);
   });
 
 
 
-  it('/api/location/10/remove-link/4 (DELETE) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).delete('/api/location/10/remove-link/4').
+  it('/api/location/10/remove-child/4 (DELETE) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).delete('/api/location/10/remove-child/4').
       set('Accept', 'application/json');
     expect(response.status).toBe(422);
   });
 
-  it('/api/location/1/remove-link/40 (DELETE) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).delete('/api/location/1/remove-link/40').
+  it('/api/location/1/remove-child/40 (DELETE) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).delete('/api/location/1/remove-child/40').
       set('Accept', 'application/json');
     expect(response.status).toBe(422);
   });
 
-  it('/api/location/1/remove-link/2 (DELETE) should not be processable', async () => {
-    const response = await request(app.getHttpServer()).delete('/api/location/1/remove-link/2').
+  it('/api/location/2/remove-child/3 (DELETE) should not be processable', async () => {
+    const response = await request(app.getHttpServer()).delete('/api/location/2/remove-child/3').
       set('Accept', 'application/json');
     expect(response.status).toBe(422);
   });
 
-  it('/api/location/1/remove-link/4 (DELETE) should remove link', async () => {
-    const response = await request(app.getHttpServer()).delete('/api/location/1/remove-link/4').
+  it('/api/location/1/remove-child/4 (DELETE) should remove child', async () => {
+    const response = await request(app.getHttpServer()).delete('/api/location/1/remove-child/4').
       set('Accept', 'application/json');
     expect(response.status).toBe(200);
   });
@@ -134,7 +142,7 @@ describe('LocationController (e2e)', () => {
   it('/api/location/ (POST) without name should fail', async () => {
     const response = await request(app.getHttpServer()).post('/api/location').
       send({
-        "parentId": 1
+        "classId": 1
       }).
       set('Accept', 'application/json');
     expect(response.status).toBe(400);
