@@ -7,7 +7,7 @@ export class CreateDto {
   @IsNotEmpty()
   classId: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   locationId: number;
 
   @IsOptional()
@@ -17,7 +17,7 @@ export class CreateDto {
   meta: 'json';
 }
 
-export class FindDto{
+export class FindDto {
 
   @IsOptional()
   classId: string;

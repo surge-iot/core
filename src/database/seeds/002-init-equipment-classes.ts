@@ -20,7 +20,7 @@ export async function seed(knex: Knex): Promise<Knex.QueryBuilder | null> {
         { id: 'HVAC.PUMP', name: 'Pump', parentId: 'HVAC'},
         { id: 'HVAC.TERMINALUNIT', name: 'Terminal Unit', parentId: 'HVAC'},
         { id: 'HVAC.TERMINALUNIT.FANCOILUNIT', name: 'Fan Coil Unit', parentId: 'HVAC.TERMINALUNIT'},
-        { id: 'HVAC.TERMINALUNIT.VAV', name: 'VAV', parentId: 'HVAC.TERMINALUNIT  '},
+        { id: 'HVAC.TERMINALUNIT.VAV', name: 'VAV', parentId: 'HVAC.TERMINALUNIT'},
         { id: 'HVAC.VALVE', name: 'Valve', parentId: 'HVAC'},
         { id: 'LIGHTINGSYSTEM', name: 'Lighting System', parentId: null},
         { id: 'LIGHTINGSYSTEM.LIGHT', name: 'Light', parentId: 'LIGHTINGSYSTEM'},

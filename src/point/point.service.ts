@@ -32,6 +32,12 @@ export class PointService {
   }
 
   async create(props: Partial<CreateDto>): Promise<PointModel> {
+    if(props.equipmentId){
+      props.locationId = (await this.equipmentModelClass.query().findById(props.equipmentId)).locationId;
+    }
+    else{
+      delete props.equipmentId;
+    }
     return this.modelClass.query()
       .insert(props);
   }

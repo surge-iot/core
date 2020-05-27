@@ -13,6 +13,10 @@ export class PointController {
 
   @Post()
   async create(@Body() props: CreateDto) {
+    if(!props.locationId && !props.equipmentId){
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+    }
+    console.log(props);
     return this.pointService.create(props);
   }
 
