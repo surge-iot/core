@@ -9,11 +9,11 @@ export class PointClassService {
 
   async findAll(filters: Partial<FindDto>): Promise<PointClassModel[]> {
     return this.modelClass.query()
-      .where(filters);
+      .where(filters).withGraphFetched('[children]');
   }
 
   async findById(id: string) {
-    return this.modelClass.query().findById(id);
+    return this.modelClass.query().findById(id).withGraphFetched('[children]');
   }
 
   async create(props: Partial<CreateDto>): Promise<PointClassModel> {
