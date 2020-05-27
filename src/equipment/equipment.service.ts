@@ -20,7 +20,12 @@ export class EquipmentService {
       .findById(id)
       .withGraphFetched('[children, parents, location, points]');
   }
-
+  async findRoots(): Promise<EquipmentModel[]> {
+    return this.modelClass.query()
+      .leftJoinRelated('parents')
+      .where('parent_id', null)
+      .withGraphFetched('[children]');
+  }
   async findChildren(id: number) {
     return this.modelClass.relatedQuery('children')
     .for(id).withGraphFetched('[children]')

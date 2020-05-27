@@ -10,7 +10,11 @@ export class LocationController {
   async findAll(@Query() filters: FindDto) {
     return this.locationService.findAll(filters);
   }
-
+  @Get('roots')
+  async findRoots() {
+    return this.locationService.findRoots();
+  }
+  
   @Get(':id')
   async findById(@Param('id', new ParseIntPipe()) id: number) {
     const location = await this.locationService.findById(id);

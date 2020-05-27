@@ -11,6 +11,11 @@ export class EquipmentController {
     return this.equipmentService.findAll(filters);
   }
 
+  @Get('roots')
+  async findRoots() {
+    return this.equipmentService.findRoots();
+  }
+
   @Get(':id')
   async findById(@Param('id', new ParseIntPipe()) id: number) {
     const equipment = await this.equipmentService.findById(id);

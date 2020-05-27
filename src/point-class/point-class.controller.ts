@@ -12,7 +12,10 @@ export class PointClassController {
   async findAll(@Query() filters: FindDto) {
     return this.pointClassService.findAll(filters);
   }
-
+  @Get('roots')
+  async findRoots() {
+    return this.pointClassService.findAll({parentId:null});
+  }
   @Get(':id')
   async findById(@Param('id') id: string) {
     const pointClass = this.pointClassService.findById(id);

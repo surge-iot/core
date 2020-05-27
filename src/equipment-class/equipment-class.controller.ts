@@ -12,7 +12,10 @@ export class EquipmentClassController {
   async findAll(@Query() filters: FindDto) {
     return this.equipmentClassService.findAll(filters);
   }
-
+  @Get('roots')
+  async findRoots() {
+    return this.equipmentClassService.findAll({parentId:null});
+  }
   @Get(':id')
   async findById(@Param('id') id: string) {
     const equipmentClass = this.equipmentClassService.findById(id);

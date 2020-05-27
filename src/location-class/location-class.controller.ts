@@ -12,6 +12,10 @@ export class LocationClassController {
   async findAll(@Query() filters: FindDto) {
     return this.locationClassService.findAll(filters);
   }
+  @Get('roots')
+  async findRoots() {
+    return this.locationClassService.findAll({parentId:null});
+  }
 
   @Get(':id')
   async findById(@Param('id') id: string) {
