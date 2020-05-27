@@ -19,6 +19,14 @@ export class LocationController {
     }
     return location;
   }
+  @Get(':id/children')
+  async findChildren(@Param('id', new ParseIntPipe()) id: number) {
+    return this.locationService.findChildren(id);
+  }
+  @Get(':id/parents')
+  async findParents(@Param('id', new ParseIntPipe()) id: number) {
+    return this.locationService.findParents(id);
+  }
 
   @Post()
   async create(@Body() props: CreateDto) {

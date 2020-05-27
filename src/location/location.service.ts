@@ -19,6 +19,16 @@ export class LocationService {
       .withGraphFetched('[children, parents]');
   }
 
+  async findChildren(id: number) {
+    return this.modelClass.relatedQuery('children')
+    .for(id).withGraphFetched('[children]')
+  }
+
+  async findParents(id: number) {
+    return this.modelClass.relatedQuery('parents')
+    .for(id).withGraphFetched('[children]')
+  }
+
   async create(props: Partial<CreateDto>): Promise<LocationModel> {
     return this.modelClass
       .query()

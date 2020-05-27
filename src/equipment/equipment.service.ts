@@ -21,6 +21,16 @@ export class EquipmentService {
       .withGraphFetched('[children, parents, location, points]');
   }
 
+  async findChildren(id: number) {
+    return this.modelClass.relatedQuery('children')
+    .for(id).withGraphFetched('[children]')
+  }
+
+  async findParents(id: number) {
+    return this.modelClass.relatedQuery('parents')
+    .for(id).withGraphFetched('[children]')
+  }
+
   async create(props: Partial<CreateDto>): Promise<EquipmentModel> {
     return this.modelClass
       .query()

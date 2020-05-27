@@ -20,6 +20,15 @@ export class EquipmentController {
     return equipment;
   }
 
+  @Get(':id/children')
+  async findChildren(@Param('id', new ParseIntPipe()) id: number) {
+    return this.equipmentService.findChildren(id);
+  }
+  @Get(':id/parents')
+  async findParents(@Param('id', new ParseIntPipe()) id: number) {
+    return this.equipmentService.findParents(id);
+  }
+
   @Post()
   async create(@Body() props: CreateDto) {
     return this.equipmentService.create(props);
