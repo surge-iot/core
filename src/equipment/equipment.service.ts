@@ -12,7 +12,7 @@ export class EquipmentService {
       filters.locationId=null;
     }
     return this.modelClass.query()
-      .where(filters).withGraphFetched('[children]');
+      .where(filters).withGraphFetched('[children, points]');
   }
 
   async findById(id: number) {
@@ -24,16 +24,16 @@ export class EquipmentService {
     return this.modelClass.query()
       .leftJoinRelated('parents')
       .where('parent_id', null)
-      .withGraphFetched('[children]');
+      .withGraphFetched('[children, points]');
   }
   async findChildren(id: number) {
     return this.modelClass.relatedQuery('children')
-    .for(id).withGraphFetched('[children]')
+    .for(id).withGraphFetched('[children, points]')
   }
 
   async findParents(id: number) {
     return this.modelClass.relatedQuery('parents')
-    .for(id).withGraphFetched('[children]')
+    .for(id).withGraphFetched('[children, points]')
   }
 
   async create(props: Partial<CreateDto>): Promise<EquipmentModel> {

@@ -75,6 +75,7 @@ export class PointModel extends BaseModel {
       classId: { type: 'string' },
       locationId: { type: 'integer' },
       equipmentId: { type: 'integer' },
+      meta: {type:'object'},
       createdAt: {
         type: 'string',
         format: 'date-time'

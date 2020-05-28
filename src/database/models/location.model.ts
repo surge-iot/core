@@ -60,6 +60,7 @@ export class LocationModel extends BaseModel {
       name: { type: 'string' },
       classId: { type: 'string' },
       parentId: { type: 'number' },
+      meta: {type:'object'},
       createdAt: {
         type: 'string',
         format: 'date-time'

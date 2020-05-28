@@ -17,11 +17,11 @@ export class PointService {
       .skipUndefined()
       .leftJoinRelated('pointOfLocations')
       .leftJoinRelated('pointOfEquipments')
-      .where('locationId', filters.locationId)
-      .andWhere('equipmentId', filters.equipmentId)
+      .where('points.locationId', filters.locationId)
+      .andWhere('points.equipmentId', filters.equipmentId)
       .andWhere('pointOfLocations.id', filters.pointOfLocationId)
       .andWhere('pointOfEquipments.id', filters.pointOfEquipmentId)
-      .andWhere('classId', filters.classId)
+      .andWhere('points.classId', filters.classId)
       .withGraphFetched('[pointOfLocations, pointOfEquipments]');
   }
 

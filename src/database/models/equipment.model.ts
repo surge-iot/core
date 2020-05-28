@@ -11,8 +11,8 @@ export class EquipmentModel extends BaseModel {
   locationId: number;
   meta: 'json';
 
-  children:EquipmentModel[];
-  parents:EquipmentModel[];
+  children: EquipmentModel[];
+  parents: EquipmentModel[];
 
   static relationMappings = {
     class: {
@@ -95,6 +95,7 @@ export class EquipmentModel extends BaseModel {
       classId: { type: 'string' },
       locationId: { type: 'number' },
       parentId: { type: 'number' },
+      meta: { type: 'object' },
       createdAt: {
         type: 'string',
         format: 'date-time'
