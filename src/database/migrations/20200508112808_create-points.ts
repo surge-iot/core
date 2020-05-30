@@ -9,6 +9,7 @@ export async function up(knex: Knex) {
     t.string('classId').notNullable();
     t.integer('locationId').unsigned().notNullable();
     t.integer('equipmentId').unsigned();
+    t.json('meta');
     t.timestamps(true, true);
 
     // Constraints

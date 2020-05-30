@@ -28,13 +28,13 @@ export async function seed(knex: Knex): Promise<Knex.QueryBuilder | null> {
       ];
       await trx('points').insert(commands);
 
-      const setpoints = [
-        { id: 8, locationId: 5, equipmentId: 2, classId: 'SETPOINT.SWITCH' },
-        { id: 9, locationId: 5, equipmentId: 2, classId: 'SETPOINT.TEMPERATURE' },
-        { id: 10, locationId: 5, equipmentId: 5, classId: 'SETPOINT.SWITCH' },
-        { id: 11, locationId: 5, equipmentId: 5, classId: 'SETPOINT.SPEED' },
-      ];
-      await trx('points').insert(setpoints);
+      // const setpoints = [
+      //   { id: 8, locationId: 5, equipmentId: 2, classId: 'SETPOINT.SWITCH' },
+      //   { id: 9, locationId: 5, equipmentId: 2, classId: 'SETPOINT.TEMPERATURE' },
+      //   { id: 10, locationId: 5, equipmentId: 5, classId: 'SETPOINT.SWITCH' },
+      //   { id: 11, locationId: 5, equipmentId: 5, classId: 'SETPOINT.SPEED' },
+      // ];
+      // await trx('points').insert(setpoints);
 
       const pointOfEquipments = [
         { pointId: 3, equipmentId: 2 },
@@ -44,10 +44,10 @@ export async function seed(knex: Knex): Promise<Knex.QueryBuilder | null> {
         { pointId: 6, equipmentId: 5 },
         { pointId: 7, equipmentId: 5 },
 
-        { pointId: 8, equipmentId: 2 },
-        { pointId: 9, equipmentId: 2 },
-        { pointId: 10, equipmentId: 5 },
-        { pointId: 11, equipmentId: 5 },
+        // { pointId: 8, equipmentId: 2 },
+        // { pointId: 9, equipmentId: 2 },
+        // { pointId: 10, equipmentId: 5 },
+        // { pointId: 11, equipmentId: 5 },
       ];
       await trx('pointOfEquipments').insert(pointOfEquipments)
 

@@ -14,7 +14,7 @@ export class CreateDto {
   equipmentId: number;
 
   @IsOptional()
-  meta: 'json';
+  meta: object;
 }
 
 export class FindDto {
@@ -48,5 +48,5 @@ export class UpdateDto {
   equipmentId: number;
 
   @IsOptional()
-  meta: 'json';
+  meta: object;
 }

@@ -10,6 +10,7 @@ export class PointModel extends BaseModel {
   classId: string;
   locationId: number;
   equipmentId: number;
+  meta:object;
 
   static relationMappings = {
     class: {
