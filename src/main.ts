@@ -10,7 +10,8 @@ async function bootstrap() {
     whitelist: true,
     transform: true,
   }));
-  app.setGlobalPrefix('api');
+  console.log(process.env.MOUNT_PREFIX)
+  app.setGlobalPrefix(process.env.MOUNT_PREFIX || '');
   app.enableCors();
   const options = new DocumentBuilder()
     .setTitle('Oneboard API')
