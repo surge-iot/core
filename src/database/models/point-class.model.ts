@@ -3,7 +3,9 @@ import { BaseClassModel } from './base-class.model';
 
 export class PointClassModel extends BaseClassModel {
   static tableName = 'pointClasses';
-
+  id:string;
+  name: string;
+  meta:object;
   static relationMappings = {
     parent: {
       relation: Model.BelongsToOneRelation,
@@ -32,6 +34,7 @@ export class PointClassModel extends BaseClassModel {
       id: { type: 'string' },
       name: { type: 'string' },
       parentId: { type: 'string' },
+      meta: { type: 'object'},
       createdAt: {
         type: 'string',
         format: 'date-time'
