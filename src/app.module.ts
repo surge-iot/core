@@ -10,10 +10,24 @@ import { PointModule } from './point/point.module';
 import { LocationClassModule } from './location-class/location-class.module';
 import { EquipmentClassModule } from './equipment-class/equipment-class.module';
 import { PointClassModule } from './point-class/point-class.module';
+import { DeviceClassModule } from './device-class/device-class.module';
+import { DeviceModule } from './device/device.module';
 
 @Module({
-  imports: [DatabaseModule, UserModule, AuthModule, LocationModule, EquipmentModule, PointModule, LocationClassModule, EquipmentClassModule, PointClassModule],
+  imports: [
+    DatabaseModule, 
+    UserModule, 
+    AuthModule, 
+    LocationModule, 
+    EquipmentModule, 
+    PointModule, 
+    LocationClassModule, 
+    EquipmentClassModule, 
+    PointClassModule,
+    DeviceClassModule,
+    DeviceModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

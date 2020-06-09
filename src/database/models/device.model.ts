@@ -41,7 +41,8 @@ export class DeviceModel extends BaseModel {
         through: {
           // persons_movies is the join table.
           from: 'devicePointMappings.deviceId',
-          to: 'devicePointMappings.pointId'
+          to: 'devicePointMappings.pointId',
+          extra: ['decommissionedAt']
         },
         to: 'points.id'
       }

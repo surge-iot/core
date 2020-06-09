@@ -65,6 +65,21 @@ export class PointModel extends BaseModel {
         },
         to: 'equipments.id'
       }
+    },
+
+    devices: {
+      relation: Model.ManyToManyRelation,
+      modelClass: __dirname + '/device.model',
+      join: {
+        from: 'points.id',
+        through: {
+          // persons_movies is the join table.
+          from: 'devicePointMappings.pointId',
+          to: 'devicePointMappings.deviceId',
+          extra: ['decommissionedAt']
+        },
+        to: 'devices.id'
+      }
     }
   };
 

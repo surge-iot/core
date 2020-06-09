@@ -9,13 +9,17 @@ import { PointModel } from './models/point.model';
 import { LocationClassModel } from './models/location-class.model';
 import { EquipmentClassModel } from './models/equipment-class.model';
 import { PointClassModel } from './models/point-class.model';
+import { DeviceClassModel } from './models/device-class.model';
+import { DeviceModel } from './models/device.model';
 const models = [UserModel,
   LocationClassModel,
   EquipmentClassModel,
   PointClassModel,
+  DeviceClassModel,
   LocationModel,
   EquipmentModel,
-  PointModel
+  PointModel,
+  DeviceModel
 ];
 
 const modelProviders = models.map(model => {

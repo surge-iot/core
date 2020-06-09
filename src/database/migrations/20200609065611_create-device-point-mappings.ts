@@ -9,7 +9,7 @@ export async function up(knex: Knex) {
     t.integer('deviceId').unsigned().notNullable();
     t.integer('pointId').unsigned().notNullable();
     t.json('meta');
-    t.timestamp('decommisionedAt');
+    t.timestamp('decommissionedAt');
     t.timestamps(true, true);
 
     // Constrains
