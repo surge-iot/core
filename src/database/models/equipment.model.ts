@@ -72,7 +72,7 @@ export class EquipmentModel extends BaseModel {
 
     pointsOfEquipment: {
       relation: Model.ManyToManyRelation,
-      modelClass: __dirname + '/command.model',
+      modelClass: __dirname + '/points.model',
       join: {
         from: 'equipments.id',
         through: {
@@ -80,7 +80,7 @@ export class EquipmentModel extends BaseModel {
           from: 'pointOfEquipments.equipmentId',
           to: 'pointOfEquipments.pointId'
         },
-        to: 'commands.id'
+        to: 'points.id'
       }
     }
   };
