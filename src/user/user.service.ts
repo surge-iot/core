@@ -25,10 +25,8 @@ export class UserService {
     if (user) {
       throw new HttpException('Forbidden', HttpStatus.CONFLICT);
     }
-    const password = nanoid(10);
-    const hash = await argon2.hash(password);
+    const hash = await argon2.hash(props.password);
     props.password = hash;
-    console.log("PASSWORD: ", password);
     // TODO: send password via email
     return this.modelClass
       .query()

@@ -7,6 +7,9 @@ export class RegisterDto {
     @IsNotEmpty()
     @IsEmail()
     email: string;
+
+    @IsNotEmpty()
+    password: string;
 }
 
 export class LoginDto {
