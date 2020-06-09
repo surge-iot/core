@@ -21,7 +21,7 @@ services:
     environment:
       - PMA_ARBITRARY=1
     ports:
-      - 8080:80
+      - 5050:80
     volumes:
       - /sessions
     external_links:

@@ -7,6 +7,7 @@ import { PointClassModel } from './point-class.model';
 export class PointModel extends BaseModel {
   static tableName = 'points';
 
+  name: string;
   classId: string;
   locationId: number;
   equipmentId: number;
@@ -73,6 +74,7 @@ export class PointModel extends BaseModel {
 
     properties: {
       id: { type: 'integer' },
+      name: { type: 'string' },
       classId: { type: 'string' },
       locationId: { type: 'integer' },
       equipmentId: { type: 'integer' },
