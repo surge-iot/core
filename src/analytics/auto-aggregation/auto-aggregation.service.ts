@@ -22,5 +22,8 @@ export class AutoAggregationService {
       const equipments = await this.equipmentService.findAll({});
       const points = await this.pointService.findAll({});
       let G = new BrickGraph(locations, equipments, points);
+      G.dfs((G, node)=>{
+        console.log(node.id);
+      })
     }
 }

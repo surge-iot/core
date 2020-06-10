@@ -4,14 +4,18 @@ import { LocationModel } from "src/database/models/location.model";
 import * as _ from "lodash";
 
 export class BrickNode {
-  id: number | string;
+  id: string;
   meta: object;
   name: string;
   type: string;
   classId: string;
   adjacencies?: string[];
   constructor(n: (LocationModel | EquipmentModel | PointModel)) {
-    this.id = n.id;
+    switch (n.constructor.name) {
+      case "LocationModel": this.id = `L-${n.id}`; break;
+      case "EquipmentModel": this.id = `E-${n.id}`; break;
+      case "PointModel": this.id = `P-${n.id}`; break;
+    }
     this.name = n.name;
     this.type = n.constructor.name;
     this.meta = n.meta;
@@ -23,6 +27,7 @@ export class BrickNode {
 export class BrickGraph {
   nodes = {};
   roots: string[] = [];
+  visited: string[] = [];
   constructor(locations: LocationModel[], equipments: EquipmentModel[], points: PointModel[]) {
     // locations
     for (let l of locations) {
@@ -47,16 +52,37 @@ export class BrickGraph {
     for (let p of points) {
       this.nodes[`P-${p.id}`] = new BrickNode(p);
     }
-    for(let p of points){
-      for(let pol of p.pointOfLocations){
+    for (let p of points) {
+      for (let pol of p.pointOfLocations) {
         this.nodes[`L-${pol.id}`].adjacencies.push(`P-${p.id}`);
       }
 
-      for(let poe of p.pointOfEquipments){
+      for (let poe of p.pointOfEquipments) {
         this.nodes[`E-${poe.id}`].adjacencies.push(`P-${p.id}`);
       }
     }
-    console.log(this.nodes)
-    console.log(this.roots);
+  }
+
+  dfs(fn: (G: BrickGraph, node: BrickNode) => void) {
+    // Reset visited
+    this.visited = [];
+
+    // Add all root nodes to recursive call
+    for (let n of this.roots) {
+      this._dfsNode(this.nodes[n], fn);
+    }
+  }
+
+  private _dfsNode(node: BrickNode, fn: (G: BrickGraph, node: BrickNode) => void) {
+    // check if already visited node
+    if (_.includes(this.visited, node.id)) {
+      return;
+    }
+    // run dfs on adjacencies
+    for (let a of node.adjacencies) {
+      this._dfsNode(this.nodes[a], fn);
+    }
+    fn(this, node);
+    this.visited.push(node.id);
   }
 }
