@@ -4,6 +4,7 @@ import { PointClassController } from './point-class.controller';
 
 @Module({
   providers: [PointClassService],
-  controllers: [PointClassController]
+  controllers: [PointClassController],
+  exports: [PointClassService],
 })
 export class PointClassModule {}

@@ -7,7 +7,7 @@ export class LocationModel extends BaseModel {
 
   name: string;
   classId: string;
-  meta: 'json';
+  meta: object;
 
   children: LocationModel[];
   parents: LocationModel[];

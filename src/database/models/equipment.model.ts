@@ -9,7 +9,7 @@ export class EquipmentModel extends BaseModel {
   name: string;
   classId: string;
   locationId: number;
-  meta: 'json';
+  meta: object;
 
   children: EquipmentModel[];
   parents: EquipmentModel[];

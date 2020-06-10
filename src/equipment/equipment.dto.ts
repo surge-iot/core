@@ -11,7 +11,7 @@ export class CreateDto {
   locationId: number
 
   @IsOptional()
-  meta: 'json';
+  meta: object;
 }
 
 export class UpdateDto {
@@ -25,7 +25,7 @@ export class UpdateDto {
   locationId: number
 
   @IsOptional()
-  meta: 'json';
+  meta: object;
 }
 
 export class FindDto {

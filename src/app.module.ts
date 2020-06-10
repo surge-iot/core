@@ -12,6 +12,7 @@ import { EquipmentClassModule } from './equipment-class/equipment-class.module';
 import { PointClassModule } from './point-class/point-class.module';
 import { DeviceClassModule } from './device-class/device-class.module';
 import { DeviceModule } from './device/device.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { DeviceModule } from './device/device.module';
     PointClassModule,
     DeviceClassModule,
     DeviceModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

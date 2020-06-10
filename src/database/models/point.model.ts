@@ -12,6 +12,8 @@ export class PointModel extends BaseModel {
   locationId: number;
   equipmentId: number;
   meta:object;
+  pointOfLocations: LocationModel[];
+  pointOfEquipments: EquipmentModel[];
 
   static relationMappings = {
     class: {

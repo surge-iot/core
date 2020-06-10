@@ -8,7 +8,7 @@ export class CreateDto {
   classId: string;
 
   @IsOptional()
-  meta: 'json';
+  meta: object;
 }
 
 export class UpdateDto {
@@ -19,7 +19,7 @@ export class UpdateDto {
   classId: string;
 
   @IsOptional()
-  meta: 'json';
+  meta: object;
 }
 
 
