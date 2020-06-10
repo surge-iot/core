@@ -15,12 +15,8 @@ export class PointService {
   async findAll(filters: Partial<FindDto>): Promise<PointModel[]> {
     return this.modelClass.query()
       .skipUndefined()
-      .leftJoinRelated('pointOfLocations')
-      .leftJoinRelated('pointOfEquipments')
       .where('points.locationId', filters.locationId)
       .andWhere('points.equipmentId', filters.equipmentId)
-      .andWhere('pointOfLocations.id', filters.pointOfLocationId)
-      .andWhere('pointOfEquipments.id', filters.pointOfEquipmentId)
       .andWhere('points.classId', filters.classId)
       .withGraphFetched('[pointOfLocations, pointOfEquipments]');
   }
