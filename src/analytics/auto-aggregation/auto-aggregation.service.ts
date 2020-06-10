@@ -28,28 +28,26 @@ export class AutoAggregationService {
 
   async aggregate(G: BrickGraph, node: BrickNode) {
     // ignore points
-    if (node.type === 'PointModel') {
+    if (AutoAggregationService.isPoint(G, node.id)) {
       return;
     }
     let adjacencies = node.adjacencies.map(v => G.nodes[v])
     console.log("ID: " + node.id);
-
+    let nodeAggregates = {};
     // Group adjacencies by class id
     adjacencies = _.groupBy(adjacencies, 'classId');
-    // Iterate of each group
+    // Iterate over each group
     for (let childClass in adjacencies) {
-      // find point class that covers all elements of this group
+      // create a list of points for each element in this group
       let points = adjacencies[childClass].map((node) => {
         return node.adjacencies.map((id) => {
           return { id: id, classId: AutoAggregationService.getClass(G, id) };
-        });
+        }).filter(p=>AutoAggregationService.isPoint(G,p.id));
       })
-      // console.log(points)
-      console.log(childClass)
-      // console.log(points)
+      // Find point classes that are attached to each element in the group
       let intersection = _.intersectionBy(...points, 'classId');
-      // console.log(intersection);
       let aggregate =[];
+      // For each such point class, accumulate the list of point ids corresponding to the elements in this group
       for(let i of intersection){
         let classId = i.classId;
         let agg = _.reduce(points, (acc,x)=>{
@@ -57,14 +55,32 @@ export class AutoAggregationService {
         }, [])
         aggregate.push({classId: classId, points:agg});
       }
-      console.log(aggregate);
+      // If aggregate points exist, add them to the aggregate list for this node
+        nodeAggregates[childClass] = aggregate;
+      
     }
+    // console.log(..._.values(nodeAggregates));
+    // Find point classes that cover all children of this node
+    let intersection = _.intersectionBy(..._.values(nodeAggregates),'classId');
+    nodeAggregates["ALL"]=[];
+      // For each such point class, accumulate the list of point ids corresponding to each childClass group
+    for(let i of intersection){
+      let classId = i.classId;
+      let agg = _.reduce(_.values(nodeAggregates), (acc,x)=>{
+        return _.union(acc,x.filter(p=>p.classId === classId).map(p=>p.points))
+      }, [])
+      agg = _.flatten(agg);
+      // Push the list of point ids and class to an ALL aggregate field for this node
+      nodeAggregates["ALL"].push({classId: classId, points:agg});
+    }
+    console.log(JSON.stringify(nodeAggregates, null, 2));
+    
   }
 
   static getClass(G: BrickGraph, id: string): string {
     return G.nodes[id].classId;
   }
-  isPoint(G: BrickGraph, id: string): boolean {
+  static isPoint(G: BrickGraph, id: string): boolean {
     return _.startsWith(G.nodes[id].classId, "PointModel");
   }
 }
