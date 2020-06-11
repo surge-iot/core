@@ -32,7 +32,7 @@ export class AutoAggregationService {
       return;
     }
     let adjacencies = node.adjacencies.map(v => G.nodes[v])
-    console.log("ID: " + node.id);
+    // console.log("ID: " + node.id);
     let nodeAggregates = {};
     // Group adjacencies by class id
     adjacencies = _.groupBy(adjacencies, 'classId');
@@ -73,7 +73,7 @@ export class AutoAggregationService {
       // Push the list of point ids and class to an TOTAL aggregate field for this node
       nodeAggregates["TOTAL"].push({classId: classId, points:agg});
     }
-    console.log(JSON.stringify(nodeAggregates, null, 2));
+    // console.log(JSON.stringify(nodeAggregates, null, 2));
     // Create points for each aggregate
 
     
@@ -85,10 +85,11 @@ export class AutoAggregationService {
           classId: AutoAggregationService.getPointClass(p.classId), 
           locationId: (node.type==='LocationModel')? AutoAggregationService.getModelId(node.id) : null,
           equipmentId: (node.type==='EquipmentModel')? AutoAggregationService.getModelId(node.id): null,
-          name: childClass+"/"+p.classId,
+          name: AutoAggregationService.getNameFromClassPath(childClass+"/"+p.classId),
           meta:{ 
             generated: true,
-            aggregates: p.points.map(point =>AutoAggregationService.getModelId(point))
+            aggregates: p.points.map(point =>AutoAggregationService.getModelId(point)),
+            classPath: childClass+"/"+p.classId,
           }
         });
         // Create links for generated point
@@ -128,5 +129,10 @@ export class AutoAggregationService {
   }
   static getPointClass(classId:string): string {
     return classId.substr(classId.indexOf("PointModel")+11);
+  }
+  static getNameFromClassPath(classPath:string){
+    let parts = classPath.split("/");
+    parts = parts.map(part =>_.last(part.split(".")))
+    return _.join(_.uniq(parts), " ");
   }
 }

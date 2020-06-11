@@ -74,6 +74,7 @@ export class BrickGraph {
     for (let n of this.roots) {
       await this._dfsNode(this.nodes[n], fn);
     }
+    console.log("DFS complete")
   }
 
   private async  _dfsNode(node: BrickNode, fn: (G: BrickGraph, node: BrickNode) => void) {

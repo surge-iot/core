@@ -11,7 +11,7 @@ export class AppController {
   }
 
   @Get('analytics')
-  runAnalytics(): string {
+  runAnalytics(): Promise<string> {
     return this.appService.runAnalytics();
   }
 }

@@ -8,8 +8,8 @@ export class AppService {
     return 'Hello World!';
   }
 
-  runAnalytics(): string {
-    this.autoAggregationService.init();
+  async runAnalytics(): Promise<string> {
+    await this.autoAggregationService.init();
     return 'Done';
   }
 }
