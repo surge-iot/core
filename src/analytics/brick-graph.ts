@@ -2,6 +2,7 @@ import { EquipmentModel } from "src/database/models/equipment.model";
 import { PointModel } from "src/database/models/point.model";
 import { LocationModel } from "src/database/models/location.model";
 import * as _ from "lodash";
+import { PointService } from "src/point/point.service";
 
 export class BrickNode {
   id: string;
@@ -28,7 +29,9 @@ export class BrickGraph {
   nodes = {};
   roots: string[] = [];
   visited: string[] = [];
-  constructor(locations: LocationModel[], equipments: EquipmentModel[], points: PointModel[]) {
+  pointService: PointService;
+  constructor(locations: LocationModel[], equipments: EquipmentModel[], points: PointModel[], pointService) {
+    this.pointService = pointService;
     // locations
     for (let l of locations) {
       this.nodes[`L-${l.id}`] = new BrickNode(l);
@@ -63,26 +66,26 @@ export class BrickGraph {
     }
   }
 
-  dfs(fn: (G: BrickGraph, node: BrickNode) => void) {
+  async dfs(fn: (G: BrickGraph, node: BrickNode) => void) {
     // Reset visited
     this.visited = [];
 
     // Add all root nodes to recursive call
     for (let n of this.roots) {
-      this._dfsNode(this.nodes[n], fn);
+      await this._dfsNode(this.nodes[n], fn);
     }
   }
 
-  private _dfsNode(node: BrickNode, fn: (G: BrickGraph, node: BrickNode) => void) {
+  private async  _dfsNode(node: BrickNode, fn: (G: BrickGraph, node: BrickNode) => void) {
     // check if already visited node
     if (_.includes(this.visited, node.id)) {
       return;
     }
     // run dfs on adjacencies
     for (let a of node.adjacencies) {
-      this._dfsNode(this.nodes[a], fn);
+      await this._dfsNode(this.nodes[a], fn);
     }
-    fn(this, node);
+    await fn(this, node);
     this.visited.push(node.id);
   }
 }

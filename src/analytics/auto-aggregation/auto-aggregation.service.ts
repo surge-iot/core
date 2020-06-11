@@ -22,8 +22,8 @@ export class AutoAggregationService {
     const locations = await this.locationService.findAll({});
     const equipments = await this.equipmentService.findAll({});
     const points = await this.pointService.findAll({});
-    let G = new BrickGraph(locations, equipments, points);
-    G.dfs(this.aggregate)
+    let G = new BrickGraph(locations, equipments, points, this.pointService);
+    await G.dfs(this.aggregate)
   }
 
   async aggregate(G: BrickGraph, node: BrickNode) {
@@ -62,7 +62,7 @@ export class AutoAggregationService {
     // console.log(..._.values(nodeAggregates));
     // Find point classes that cover all children of this node
     let intersection = _.intersectionBy(..._.values(nodeAggregates),'classId');
-    nodeAggregates["ALL"]=[];
+    nodeAggregates["TOTAL"]=[];
       // For each such point class, accumulate the list of point ids corresponding to each childClass group
     for(let i of intersection){
       let classId = i.classId;
@@ -70,10 +70,50 @@ export class AutoAggregationService {
         return _.union(acc,x.filter(p=>p.classId === classId).map(p=>p.points))
       }, [])
       agg = _.flatten(agg);
-      // Push the list of point ids and class to an ALL aggregate field for this node
-      nodeAggregates["ALL"].push({classId: classId, points:agg});
+      // Push the list of point ids and class to an TOTAL aggregate field for this node
+      nodeAggregates["TOTAL"].push({classId: classId, points:agg});
     }
     console.log(JSON.stringify(nodeAggregates, null, 2));
+    // Create points for each aggregate
+
+    
+    for(let childClass in nodeAggregates){
+      // Get list of aggregates per child class
+      const agg = nodeAggregates[childClass];
+      for(let p of agg){
+        const aggPoint = await G.pointService.create({
+          classId: AutoAggregationService.getPointClass(p.classId), 
+          locationId: (node.type==='LocationModel')? AutoAggregationService.getModelId(node.id) : null,
+          equipmentId: (node.type==='EquipmentModel')? AutoAggregationService.getModelId(node.id): null,
+          name: childClass+"/"+p.classId,
+          meta:{ 
+            generated: true,
+            aggregates: p.points.map(point =>AutoAggregationService.getModelId(point))
+          }
+        });
+        // Create links for generated point
+        switch(node.type){
+          case 'LocationModel':{
+            await G.pointService.addPointOfLocation(aggPoint.id, AutoAggregationService.getModelId(node.id));
+            break;
+          }
+          case 'EquipmentModel':{
+            await G.pointService.addPointOfEquipment(aggPoint.id, AutoAggregationService.getModelId(node.id));
+            break;
+          }
+        }
+
+        // Insert point and adjacency into Graph so that DFS can continue
+        let aggPointNode = new BrickNode(aggPoint);
+        aggPointNode.classId = childClass+"/"+p.classId;
+        G.nodes[aggPointNode.id] = aggPointNode;
+        // console.log(aggPointNode);
+        // Add aggregate point node to adjacency of node
+        G.nodes[node.id].adjacencies.push(aggPointNode.id);
+        
+      }
+      
+    }
     
   }
 
@@ -81,6 +121,12 @@ export class AutoAggregationService {
     return G.nodes[id].classId;
   }
   static isPoint(G: BrickGraph, id: string): boolean {
-    return _.startsWith(G.nodes[id].classId, "PointModel");
+    return G.nodes[id].classId.includes("PointModel");
+  }
+  static getModelId(id:string):number{
+    return +(id.substr(2));
+  }
+  static getPointClass(classId:string): string {
+    return classId.substr(classId.indexOf("PointModel")+11);
   }
 }

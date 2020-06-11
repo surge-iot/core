@@ -8,6 +8,9 @@ export class CreateDto {
   classId: string;
 
   @IsOptional()
+  name: string;
+
+  @IsOptional()
   locationId: number;
 
   @IsOptional()
@@ -22,6 +25,9 @@ export class FindDto {
   @IsOptional()
   classId: string;
 
+  @IsOptional()
+  name: string;
+  
   @IsOptional()
   locationId: number;
 
@@ -40,6 +46,9 @@ export class UpdateDto {
 
   @IsOptional()
   classId: string;
+
+  @IsOptional()
+  name: string;
 
   @IsOptional()
   locationId: number;
