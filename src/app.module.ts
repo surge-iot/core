@@ -13,6 +13,7 @@ import { PointClassModule } from './point-class/point-class.module';
 import { DeviceClassModule } from './device-class/device-class.module';
 import { DeviceModule } from './device/device.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { ArpModule } from './arp/arp.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     DeviceClassModule,
     DeviceModule,
     AnalyticsModule,
+    ArpModule,
   ],
   controllers: [AppController],
   providers: [AppService],

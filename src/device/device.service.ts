@@ -23,6 +23,12 @@ export class DeviceService {
       .withGraphFetched('[location, points]');
   }
 
+  async findBySerial(serial: string) {
+    return this.modelClass.query()
+      .findOne({serial})
+      .withGraphFetched('[location, points]');
+  }
+
   async create(props: Partial<CreateDto>): Promise<DeviceModel> {
     return this.modelClass
       .query()
