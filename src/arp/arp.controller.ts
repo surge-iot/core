@@ -8,7 +8,7 @@ export class ArpController {
     private arpService: ArpService
   ) { }
 
-  @Get('gateway/:serial/update-ip')
+  @Post('gateway/:serial/update-ip')
   async updateGatewayIp(@Param('serial') serial: string, @Req() request: Request) {
     // console.log(request);
     return this.arpService.updateGatewayIp(serial, request.connection.remoteAddress)
