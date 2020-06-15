@@ -14,6 +14,7 @@ import { DeviceClassModule } from './device-class/device-class.module';
 import { DeviceModule } from './device/device.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { ArpModule } from './arp/arp.module';
+import { FogmrModule } from './fogmr/fogmr.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ArpModule } from './arp/arp.module';
     DeviceModule,
     AnalyticsModule,
     ArpModule,
+    FogmrModule,
   ],
   controllers: [AppController],
   providers: [AppService],
