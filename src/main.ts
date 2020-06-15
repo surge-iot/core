@@ -10,7 +10,7 @@ async function bootstrap() {
     whitelist: true,
     transform: true,
   }));
-  console.log(process.env.MOUNT_PREFIX)
+  console.log("MOUNT_PREFIX: " + process.env.MOUNT_PREFIX)
   app.setGlobalPrefix(process.env.MOUNT_PREFIX || '');
   app.enableCors();
   const options = new DocumentBuilder()

@@ -28,7 +28,8 @@ ENV NODE_ENV=production \
 	DATABASE_PORT=3306 \
 	DATABASE_USER=oneboard \
 	DATABASE_PASSWORD=oneboard \
-	DATABASE_NAME=oneboard
+	DATABASE_NAME=oneboard \
+	MQTT_HOST=mqtt://mosquitto
 
 EXPOSE 3000
 
