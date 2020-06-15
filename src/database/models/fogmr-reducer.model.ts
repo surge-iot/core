@@ -25,7 +25,7 @@ export class FogmrReducerModel extends BaseModel {
       relation: Model.BelongsToOneRelation,
       modelClass: DeviceModel,
       join: {
-        from: 'fogmrReducers.inputDeviceId',
+        from: 'fogmrReducers.outputDeviceId',
         to: 'devices.id'
       }
     }, 

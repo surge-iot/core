@@ -37,14 +37,12 @@ export async function up(knex: Knex) {
     // this creates an "id" column that gets autoincremented
     t.increments();
     t.integer('inputDeviceId').unsigned().notNullable();
-    t.integer('reducerId').unsigned().notNullable();
     t.integer('taskId').unsigned().notNullable();
     t.integer('executorId').unsigned();
     t.boolean('active');
     t.json('meta');
 
     t.foreign('inputDeviceId').references('devices.id').onDelete('CASCADE');
-    t.foreign('reducerId').references('fogmrReducers.id').onDelete('CASCADE');
     t.foreign('taskId').references('fogmrTasks.id').onDelete('CASCADE');
     t.foreign('executorId').references('devices.id').onDelete('CASCADE');
   });

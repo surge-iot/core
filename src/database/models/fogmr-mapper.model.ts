@@ -2,14 +2,12 @@ import { BaseModel } from './base.model';
 import { Model } from 'objection';
 import { FogmrTaskModel } from './fogmr-task.model';
 import { DeviceModel } from './device.model';
-import { FogmrReducerModel } from './fogmr-reducer.model';
 
 export class FogmrMapperModel extends BaseModel {
   static tableName = 'fogmrMappers';
 
   task: FogmrTaskModel;
   inputDevice: DeviceModel;
-  reducer: FogmrReducerModel;
   executor: DeviceModel;
   active: boolean;
   meta: object;
@@ -31,14 +29,6 @@ export class FogmrMapperModel extends BaseModel {
         to: 'devices.id'
       }
     },    
-    reducer: {
-      relation: Model.BelongsToOneRelation,
-      modelClass: FogmrReducerModel,
-      join: {
-        from: 'fogmrMappers.reducerId',
-        to: 'reducers.id'
-      }
-    },  
     executor: {
       relation: Model.BelongsToOneRelation,
       modelClass: DeviceModel,
@@ -57,7 +47,6 @@ export class FogmrMapperModel extends BaseModel {
       id: { type: 'integer' },
       taskId: { type: 'integer' },
       inputDeviceId: { type: 'integer' },
-      reducerId: { type: 'integer' },
       executorId: { type: 'integer' },
       active: { type: 'boolean' },
       meta: { type: 'object' },
