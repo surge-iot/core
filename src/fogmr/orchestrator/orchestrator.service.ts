@@ -77,7 +77,7 @@ export class OrchestratorService {
       }
       const topic = `GATEWAY/${mapper.executor.serial}/FOGMR/${fogmrFunctionName}/${task.id}/map/${mapper.inputDevice.serial}`
       console.log(topic, message);
-      this.mqttClient.publish(topic, JSON.stringify(message));
+      this.mqttClient.publish(topic, JSON.stringify(message), {retain:true});
     }
     // Generate mqtt message for reducer
     { 
@@ -95,7 +95,7 @@ export class OrchestratorService {
       }
       const topic = `GATEWAY/${reducer.executor.serial}/FOGMR/${fogmrFunctionName}/${task.id}/reduce`
       console.log(topic, message)
-      this.mqttClient.publish(topic, JSON.stringify(message));
+      this.mqttClient.publish(topic, JSON.stringify(message), {retain:true});
     }
   }
 }
