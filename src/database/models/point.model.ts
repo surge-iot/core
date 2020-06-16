@@ -3,6 +3,7 @@ import { Model } from 'objection';
 import { LocationModel } from './location.model';
 import { EquipmentModel } from './equipment.model';
 import { PointClassModel } from './point-class.model';
+import { DeviceModel } from './device.model';
 
 export class PointModel extends BaseModel {
   static tableName = 'points';
@@ -14,6 +15,7 @@ export class PointModel extends BaseModel {
   meta:object;
   pointOfLocations: LocationModel[];
   pointOfEquipments: EquipmentModel[];
+  devices: DeviceModel[];
 
   static relationMappings = {
     class: {
