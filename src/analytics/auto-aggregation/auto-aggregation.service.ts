@@ -27,7 +27,7 @@ export class AutoAggregationService {
     const locations = await this.locationService.findAll({});
     const equipments = await this.equipmentService.findAll({});
     const points = await this.pointService.findAll({});
-    let G = new BrickGraph(locations, equipments, points, this.pointService);
+    let G = new BrickGraph(locations, equipments, points, this.pointModelClass, this.pointService);
     await G.dfs(this.aggregate)
   }
 
@@ -87,29 +87,34 @@ export class AutoAggregationService {
       const agg = nodeAggregates[childClass];
       for (let p of agg) {
         const aggregateList = p.points.map(point => AutoAggregationService.getModelId(point));
-        const aggPoint = await G.pointService.create({
-          classId: AutoAggregationService.getPointClass(p.classId),
-          locationId: (node.type === 'LocationModel') ? AutoAggregationService.getModelId(node.id) : null,
-          equipmentId: (node.type === 'EquipmentModel') ? AutoAggregationService.getModelId(node.id) : null,
-          name: AutoAggregationService.getNameFromClassPath(childClass + "/" + p.classId),
-          meta: {
-            generated: true,
-            aggregates: aggregateList,
-            classPath: childClass + "/" + p.classId,
-            aggregateHash: crypto.createHmac('sha1', secret)
-              .update(aggregateList.sort().toString())
-              .digest('hex')
-          }
-        });
-        // Create links for generated point
-        switch (node.type) {
-          case 'LocationModel': {
-            await G.pointService.addPointOfLocation(aggPoint.id, AutoAggregationService.getModelId(node.id));
-            break;
-          }
-          case 'EquipmentModel': {
-            await G.pointService.addPointOfEquipment(aggPoint.id, AutoAggregationService.getModelId(node.id));
-            break;
+        let aggPoint = await G.pointModelClass.query().findOne('meta', "LIKE", `%${crypto.createHmac('sha1', secret)
+          .update([754, 757].sort().toString())
+          .digest('hex')}%`);
+        if (!aggPoint) {
+          aggPoint = await G.pointModelClass.query().insert({
+            classId: AutoAggregationService.getPointClass(p.classId),
+            locationId: (node.type === 'LocationModel') ? AutoAggregationService.getModelId(node.id) : null,
+            equipmentId: (node.type === 'EquipmentModel') ? AutoAggregationService.getModelId(node.id) : null,
+            name: AutoAggregationService.getNameFromClassPath(childClass + "/" + p.classId),
+            meta: {
+              generated: true,
+              aggregates: aggregateList,
+              classPath: childClass + "/" + p.classId,
+              aggregateHash: crypto.createHmac('sha1', secret)
+                .update(aggregateList.sort().toString())
+                .digest('hex')
+            }
+          });
+          // Create links for generated point
+          switch (node.type) {
+            case 'LocationModel': {
+              await G.pointService.addPointOfLocation(aggPoint.id, AutoAggregationService.getModelId(node.id));
+              break;
+            }
+            case 'EquipmentModel': {
+              await G.pointService.addPointOfEquipment(aggPoint.id, AutoAggregationService.getModelId(node.id));
+              break;
+            }
           }
         }
 
@@ -147,9 +152,9 @@ export class AutoAggregationService {
 
   async test() {
     // const point = await this.pointModelClass.query().findOne('meta', "LIKE",  '%aggregates: [721,724]%')
-    const point = await this.pointModelClass.query().findOne('meta', "LIKE",  `%${crypto.createHmac('sha1', secret)
-    .update([754, 757].sort().toString())
-    .digest('hex')}%`)
+    const point = await this.pointModelClass.query().findOne('meta', "LIKE", `%${crypto.createHmac('sha1', secret)
+      .update([754, 757].sort().toString())
+      .digest('hex')}%`)
     console.log(point)
   }
 }

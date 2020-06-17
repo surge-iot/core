@@ -3,6 +3,7 @@ import { PointModel } from "src/database/models/point.model";
 import { LocationModel } from "src/database/models/location.model";
 import * as _ from "lodash";
 import { PointService } from "src/point/point.service";
+import { ModelClass } from "objection";
 
 export class BrickNode {
   id: string;
@@ -29,8 +30,10 @@ export class BrickGraph {
   nodes = {};
   roots: string[] = [];
   visited: string[] = [];
+  pointModelClass: ModelClass<PointModel>;
   pointService: PointService;
-  constructor(locations: LocationModel[], equipments: EquipmentModel[], points: PointModel[], pointService) {
+  constructor(locations: LocationModel[], equipments: EquipmentModel[], points: PointModel[], pointModelClass, pointService) {
+    this.pointModelClass = pointModelClass;
     this.pointService = pointService;
     // locations
     for (let l of locations) {
