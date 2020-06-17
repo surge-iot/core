@@ -12,6 +12,9 @@ export class PointService {
     @Inject('EquipmentModel') private equipmentModelClass: ModelClass<EquipmentModel>,
     @Inject('LocationModel') private locationModelClass: ModelClass<LocationModel>) { }
 
+  get pointModelClass(): ModelClass<PointModel> {
+    return this.modelClass;
+  }
   async findAll(filters: Partial<FindDto>): Promise<PointModel[]> {
     return this.modelClass.query()
       .skipUndefined()
@@ -27,11 +30,15 @@ export class PointService {
       .withGraphFetched('[location, equipment, pointOfLocations, pointOfEquipments]')
   }
 
+  async findOne(prop, operator, value) {
+    return this.modelClass.query().findOne(prop, operator, value);
+  }
+
   async create(props: Partial<CreateDto>): Promise<PointModel> {
-    if(props.equipmentId){
+    if (props.equipmentId) {
       props.locationId = (await this.equipmentModelClass.query().findById(props.equipmentId)).locationId;
     }
-    else{
+    else {
       delete props.equipmentId;
     }
     return this.modelClass.query()
@@ -51,7 +58,7 @@ export class PointService {
   async addPointOfLocation(id: number, locationId: number): Promise<number> {
     const point = await this.modelClass.query().findById(id)
     const location = await this.locationModelClass.query().findById(locationId)
-    if(!point || !location){
+    if (!point || !location) {
       return null;
     }
     return this.modelClass.relatedQuery('pointOfLocations')
@@ -62,7 +69,7 @@ export class PointService {
   async removePointOfLocation(id: number, locationId: number): Promise<number> {
     const point = await this.modelClass.query().findById(id)
     const location = await this.locationModelClass.query().findById(locationId)
-    if(!point || !location){
+    if (!point || !location) {
       return null;
     }
     return this.modelClass.relatedQuery('pointOfLocations')
@@ -74,7 +81,7 @@ export class PointService {
   async addPointOfEquipment(id: number, equipmentId: number): Promise<number> {
     const point = await this.modelClass.query().findById(id)
     const equipment = await this.equipmentModelClass.query().findById(equipmentId)
-    if(!point || !equipment){
+    if (!point || !equipment) {
       return null;
     }
     return this.modelClass.relatedQuery('pointOfEquipments')
@@ -85,7 +92,7 @@ export class PointService {
   async removePointOfEquipment(id: number, equipmentId: number): Promise<number> {
     const point = await this.modelClass.query().findById(id)
     const equipment = await this.equipmentModelClass.query().findById(equipmentId)
-    if(!point || !equipment){
+    if (!point || !equipment) {
       return null;
     }
     return this.modelClass.relatedQuery('pointOfEquipments')

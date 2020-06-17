@@ -8,7 +8,10 @@ import { PointModel } from 'src/database/models/point.model';
 export class DeviceService {
   constructor(@Inject('DeviceModel') private modelClass: ModelClass<DeviceModel>,
   @Inject('PointModel') private pointModelClass: ModelClass<PointModel>) { }
-
+  
+  get deviceModelClass(): ModelClass<DeviceModel> {
+    return this.modelClass;
+  }
   async findAll(filters: Partial<FindDto>): Promise<DeviceModel[]> {
     if(filters.locationId==='null'){
       filters.locationId=null;

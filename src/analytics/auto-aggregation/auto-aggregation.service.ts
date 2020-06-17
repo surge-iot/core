@@ -11,6 +11,7 @@ import * as _ from "lodash";
 import { ModelClass } from 'objection';
 import { PointModel } from 'src/database/models/point.model';
 import * as crypto from 'crypto';
+import { DeviceModel } from 'src/database/models/device.model';
 const secret = 'showmethecode';
 
 @Injectable()
@@ -20,14 +21,13 @@ export class AutoAggregationService {
     private equipmentService: EquipmentService,
     private pointService: PointService,
     private deviceService: DeviceService,
-    @Inject('PointModel') private pointModelClass: ModelClass<PointModel>,
   ) { }
 
   async init() {
     const locations = await this.locationService.findAll({});
     const equipments = await this.equipmentService.findAll({});
     const points = await this.pointService.findAll({});
-    let G = new BrickGraph(locations, equipments, points, this.pointModelClass, this.pointService);
+    let G = new BrickGraph(locations, equipments, points, this.pointService, this.deviceService);
     await G.dfs(this.aggregate)
   }
 
@@ -87,11 +87,11 @@ export class AutoAggregationService {
       const agg = nodeAggregates[childClass];
       for (let p of agg) {
         const aggregateList = p.points.map(point => AutoAggregationService.getModelId(point));
-        let aggPoint = await G.pointModelClass.query().findOne('meta', "LIKE", `%${crypto.createHmac('sha1', secret)
-          .update([754, 757].sort().toString())
+        let aggPoint = await G.pointService.findOne('meta', "LIKE", `%${crypto.createHmac('sha1', secret)
+          .update(aggregateList.sort().toString())
           .digest('hex')}%`);
         if (!aggPoint) {
-          aggPoint = await G.pointModelClass.query().insert({
+          aggPoint = await G.pointService.create({
             classId: AutoAggregationService.getPointClass(p.classId),
             locationId: (node.type === 'LocationModel') ? AutoAggregationService.getModelId(node.id) : null,
             equipmentId: (node.type === 'EquipmentModel') ? AutoAggregationService.getModelId(node.id) : null,
@@ -115,6 +115,49 @@ export class AutoAggregationService {
               await G.pointService.addPointOfEquipment(aggPoint.id, AutoAggregationService.getModelId(node.id));
               break;
             }
+          }
+          // If we are creating a new point, then we need to associate with the correct device
+          // Find the devices related to the points that we are aggregating
+          const devices = await G.deviceService.deviceModelClass.query()
+            .joinRelated('points')
+            .whereIn('points.id', aggregateList);
+          const deviceGroups = _.groupBy(devices, 'classId');
+          for (let deviceClass in deviceGroups) {
+            let devicesToAggregate = deviceGroups[deviceClass];
+            if (devicesToAggregate.length === 1) {
+              // If there is only one device to aggregate, just associate it with the generated point and continue
+              await G.deviceService.addPoint(devicesToAggregate[0].id, aggPoint.id);
+              continue;
+            }
+            // Otherwise try to find a device that aggregates this group of devices
+            const hash = crypto.createHmac('sha1', secret)
+              .update(devicesToAggregate.sort().toString())
+              .digest('hex')
+            devicesToAggregate = devicesToAggregate.map(device => device.serial);
+
+            let aggDevice = await G.deviceService.deviceModelClass.query()
+              .findOne('meta', "LIKE", `%${hash}%`);
+            if (aggDevice) {
+              await G.deviceService.addPoint(aggDevice.id, aggPoint.id);
+              continue;
+            }
+
+            for (let aggregatorService of ['SPARK', 'FOGMR']) {
+              // Otherwise create a new aggregate device
+              aggDevice = await G.deviceService.create({
+                classId: `AGGREGATOR.${aggregatorService}.${AutoAggregationService.getDeviceClass(deviceClass)}`,
+                locationId: aggPoint.locationId,
+                serial: `${aggregatorService.toLowerCase()}-${hash}`,
+                meta: {
+                  generated: true,
+                  aggregates: devicesToAggregate,
+                  aggregateHash: hash
+                }
+              });
+              // ... and associate it with the point
+              await G.deviceService.addPoint(aggDevice.id, aggPoint.id);
+            }
+
           }
         }
 
@@ -144,6 +187,12 @@ export class AutoAggregationService {
   static getPointClass(classId: string): string {
     return classId.substr(classId.indexOf("PointModel") + 11);
   }
+  static getDeviceClass(classId: string): string {
+    if (classId.startsWith("AGGREGATOR")) {
+      return _.join(classId.split('.').splice(2), ".");
+    }
+    return classId;
+  }
   static getNameFromClassPath(classPath: string) {
     let parts = classPath.split("/");
     parts = parts.map(part => _.last(part.split(".")))
@@ -152,9 +201,13 @@ export class AutoAggregationService {
 
   async test() {
     // const point = await this.pointModelClass.query().findOne('meta', "LIKE",  '%aggregates: [721,724]%')
-    const point = await this.pointModelClass.query().findOne('meta', "LIKE", `%${crypto.createHmac('sha1', secret)
-      .update([754, 757].sort().toString())
-      .digest('hex')}%`)
-    console.log(point)
+    // const point = await this.pointService.findOne('meta', "LIKE", `%${crypto.createHmac('sha1', secret)
+    //   .update([754, 757].sort().toString())
+    //   .digest('hex')}%`)
+    const devices = await this.deviceService.deviceModelClass.query()
+      .joinRelated('points')
+      .whereIn('points.id', [714, 10]);
+
+    console.log(devices)
   }
 }
