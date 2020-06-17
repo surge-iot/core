@@ -12,4 +12,8 @@ export class AppService {
     await this.autoAggregationService.init();
     return 'Done';
   }
+  async testAnalytics(): Promise<string> {
+    await this.autoAggregationService.test();
+    return 'Done';
+  }
 }
