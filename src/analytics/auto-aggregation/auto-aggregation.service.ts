@@ -81,12 +81,14 @@ export class AutoAggregationService {
     // console.log(JSON.stringify(nodeAggregates, null, 2));
     // Create points for each aggregate
 
-
+    console.log(node.id)
+    console.log(nodeAggregates);
     for (let childClass in nodeAggregates) {
       // Get list of aggregates per child class
       const agg = nodeAggregates[childClass];
       for (let p of agg) {
         const aggregateList = p.points.map(point => AutoAggregationService.getModelId(point));
+        console.log(aggregateList);
         let aggPoint = await G.pointService.findOne('meta', "LIKE", `%${crypto.createHmac('sha1', secret)
           .update(aggregateList.sort().toString())
           .digest('hex')}%`);
@@ -105,7 +107,9 @@ export class AutoAggregationService {
                 .digest('hex')
             }
           });
-          // Create links for generated point
+        }
+        // Create links for generated point
+        try {
           switch (node.type) {
             case 'LocationModel': {
               await G.pointService.addPointOfLocation(aggPoint.id, AutoAggregationService.getModelId(node.id));
@@ -116,50 +120,54 @@ export class AutoAggregationService {
               break;
             }
           }
-          // If we are creating a new point, then we need to associate with the correct device
-          // Find the devices related to the points that we are aggregating
-          const devices = await G.deviceService.deviceModelClass.query()
-            .joinRelated('points')
-            .whereIn('points.id', aggregateList);
-          const deviceGroups = _.groupBy(devices, 'classId');
-          for (let deviceClass in deviceGroups) {
-            let devicesToAggregate = deviceGroups[deviceClass];
-            if (devicesToAggregate.length === 1) {
-              // If there is only one device to aggregate, just associate it with the generated point and continue
-              await G.deviceService.addPoint(devicesToAggregate[0].id, aggPoint.id);
-              continue;
-            }
-            // Otherwise try to find a device that aggregates this group of devices
-            const hash = crypto.createHmac('sha1', secret)
-              .update(devicesToAggregate.sort().toString())
-              .digest('hex')
-            devicesToAggregate = devicesToAggregate.map(device => device.serial);
-
-            let aggDevice = await G.deviceService.deviceModelClass.query()
-              .findOne('meta', "LIKE", `%${hash}%`);
-            if (aggDevice) {
-              await G.deviceService.addPoint(aggDevice.id, aggPoint.id);
-              continue;
-            }
-
-            for (let aggregatorService of ['SPARK', 'FOGMR']) {
-              // Otherwise create a new aggregate device
-              aggDevice = await G.deviceService.create({
-                classId: `AGGREGATOR.${aggregatorService}.${AutoAggregationService.getDeviceClass(deviceClass)}`,
-                locationId: aggPoint.locationId,
-                serial: `${aggregatorService.toLowerCase()}-${hash}`,
-                meta: {
-                  generated: true,
-                  aggregates: devicesToAggregate,
-                  aggregateHash: hash
-                }
-              });
-              // ... and associate it with the point
-              await G.deviceService.addPoint(aggDevice.id, aggPoint.id);
-            }
-
-          }
         }
+        catch (err) {
+          console.log(err);
+        }
+        // If we are creating a new point, then we need to associate with the correct device
+        // Find the devices related to the points that we are aggregating
+        const devices = await G.deviceService.deviceModelClass.query()
+          .joinRelated('points')
+          .whereIn('points.id', aggregateList);
+        const deviceGroups = _.groupBy(devices, 'classId');
+        for (let deviceClass in deviceGroups) {
+          let devicesToAggregate = deviceGroups[deviceClass];
+          if (devicesToAggregate.length === 1) {
+            // If there is only one device to aggregate, just associate it with the generated point and continue
+            await G.deviceService.addPoint(devicesToAggregate[0].id, aggPoint.id);
+            continue;
+          }
+          // Otherwise try to find a device that aggregates this group of devices
+          const hash = crypto.createHmac('sha1', secret)
+            .update(devicesToAggregate.sort().toString())
+            .digest('hex')
+          devicesToAggregate = devicesToAggregate.map(device => device.serial);
+
+          let aggDevice = await G.deviceService.deviceModelClass.query()
+            .findOne('meta', "LIKE", `%${hash}%`);
+          if (aggDevice) {
+            await G.deviceService.addPoint(aggDevice.id, aggPoint.id);
+            continue;
+          }
+
+          for (let aggregatorService of ['SPARK', 'FOGMR']) {
+            // Otherwise create a new aggregate device
+            aggDevice = await G.deviceService.create({
+              classId: `AGGREGATOR.${aggregatorService}.${AutoAggregationService.getDeviceClass(deviceClass)}`,
+              locationId: aggPoint.locationId,
+              serial: `${aggregatorService.toLowerCase()}-${hash}`,
+              meta: {
+                generated: true,
+                aggregates: devicesToAggregate,
+                aggregateHash: hash
+              }
+            });
+            // ... and associate it with the point
+            await G.deviceService.addPoint(aggDevice.id, aggPoint.id);
+          }
+
+        }
+
 
         // Insert point and adjacency into Graph so that DFS can continue
         let aggPointNode = new BrickNode(aggPoint);
