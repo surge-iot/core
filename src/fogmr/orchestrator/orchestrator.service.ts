@@ -6,6 +6,7 @@ import { FogmrTaskModel } from 'src/database/models/fogmr-task.model';
 import { FogmrReducerModel } from 'src/database/models/fogmr-reducer.model';
 import { FogmrMapperModel } from 'src/database/models/fogmr-mapper.model';
 import * as mqtt from 'mqtt';
+import { CreateTaskDto } from './orchestrator.dto';
 
 @Injectable()
 export class OrchestratorService {
@@ -16,14 +17,16 @@ export class OrchestratorService {
     @Inject('FogmrTaskModel') private fogmrTaskModelClass: ModelClass<FogmrTaskModel>,
     @Inject('FogmrReducerModel') private fogmrReducerModelClass: ModelClass<FogmrReducerModel>,
     @Inject('FogmrMapperModel') private fogmrMapperModelClass: ModelClass<FogmrMapperModel>,
-  ) { 
+  ) {
     this.mqttClient = mqtt.connect(process.env.MQTT_HOST);
-    this.mqttClient.on('connect', function(){
+    this.mqttClient.on('connect', function () {
       console.log("Connected to MQTT broker")
     })
   }
 
-  async createTask(inputDeviceSerials: string[], outputDeviceSerial: string, fogmrFunctionName: string) {
+  async createTask(props: CreateTaskDto) {
+    const { inputDeviceSerials, outputDeviceSerial, fogmrFunctionName } = props;
+    console.log(inputDeviceSerials, outputDeviceSerial, fogmrFunctionName);
     const inputDevices: DeviceModel[] = await this.deviceModelClass.query().whereIn('serial', inputDeviceSerials);
     const outputDevice: DeviceModel = await this.deviceModelClass.query().findOne({ serial: outputDeviceSerial });
     const fogmrFunction = await this.fogmrFunctionModelClass.query().findOne({ name: fogmrFunctionName });
@@ -63,39 +66,46 @@ export class OrchestratorService {
     // console.log(reducer);
 
     // Generate mqtt messages for mappers
-    for(let mapper of mappers){
-      const message = { 
-        active:mapper.active,
-        input:{
-          topic:`${mapper.inputDevice.classId}/${mapper.inputDevice.serial}`,
+    for (let mapper of mappers) {
+      const message = {
+        active: mapper.active,
+        input: {
+          topic: `${mapper.inputDevice.classId}/${mapper.inputDevice.serial}`,
           host: mapper.executor.meta['ip']
         },
-        output:{
+        output: {
           topic: `FOGMR/intermediate/${fogmrFunctionName}/${task.id}`,
           host: reducer.executor.meta['ip']
         }
       }
       const topic = `GATEWAY/${mapper.executor.serial}/FOGMR/${fogmrFunctionName}/${task.id}/map/${mapper.inputDevice.serial}`
       console.log(topic, message);
-      this.mqttClient.publish(topic, JSON.stringify(message), {retain:true});
+      this.mqttClient.publish(topic, JSON.stringify(message), { retain: true });
     }
     // Generate mqtt message for reducer
-    { 
-      const message ={ 
+    {
+      let outputHost = '';
+      try {
+        const gateway: DeviceModel = await this.deviceModelClass.query().findOne({ serial: outputDevice.meta['gateway'] });
+        outputHost = gateway.meta['ip'];
+      }catch(err) {
+        outputHost = reducer.executor.meta['ip'];
+      }
+      const message = {
         active: reducer.active,
-        input:{
+        input: {
           topic: `FOGMR/intermediate/${fogmrFunctionName}/${task.id}`,
           host: reducer.executor.meta['ip'],
           streamCount: mappers.length
         },
-        output:{
+        output: {
           topic: `${outputDevice.classId}/${outputDevice.serial}`,
-          host: reducer.executor.meta['ip'],
+          host: outputHost,
         }
       }
       const topic = `GATEWAY/${reducer.executor.serial}/FOGMR/${fogmrFunctionName}/${task.id}/reduce`
       console.log(topic, message)
-      this.mqttClient.publish(topic, JSON.stringify(message), {retain:true});
+      this.mqttClient.publish(topic, JSON.stringify(message), { retain: true });
     }
   }
 }
