@@ -20,6 +20,15 @@ export class DeviceController {
     return device;
   }
 
+  @Get('serial/:serial')
+  async findBySerial(@Param('serial') serial: string) {
+    const device = await this.deviceService.findBySerial(serial);
+    if (!device) {
+      throw new HttpException('Unprocessable Entity', HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    return device;
+  }
+
   @Post()
   async create(@Body() props: CreateDto) {
     return this.deviceService.create(props);
