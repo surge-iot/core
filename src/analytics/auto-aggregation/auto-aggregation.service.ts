@@ -143,16 +143,20 @@ export class AutoAggregationService {
             .digest('hex')
           devicesToAggregate = devicesToAggregate.map(device => device.serial);
 
-          let aggDevice = await G.deviceService.deviceModelClass.query()
-            .findOne('meta', "LIKE", `%${hash}%`);
-          if (aggDevice) {
-            await G.deviceService.addPoint(aggDevice.id, aggPoint.id);
+          let aggDevices = await G.deviceService.deviceModelClass.query()
+            .where('meta', "LIKE", `%${hash}%`);
+          for (let aggDevice of aggDevices) {
+            try {
+              await G.deviceService.addPoint(aggDevice.id, aggPoint.id);
+            } catch (err) { console.log(err) }
+          }
+          if(aggDevices.length>0){
             continue;
           }
 
           for (let aggregatorService of ['SPARK', 'FOGMR']) {
             // Otherwise create a new aggregate device
-            aggDevice = await G.deviceService.create({
+            let aggDevice = await G.deviceService.create({
               classId: `AGGREGATOR.${aggregatorService}.${AutoAggregationService.getDeviceClass(deviceClass)}`,
               locationId: aggPoint.locationId,
               serial: `${aggregatorService.toLowerCase()}-${hash}`,
