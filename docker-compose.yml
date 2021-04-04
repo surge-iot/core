@@ -27,6 +27,21 @@ services:
     external_links:
       - mysql:db
 
+  grafana:
+    image: grafana/grafana
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-simple-json-datasource
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_SECURITY_ADMIN_USER = admin
+      - GF_SECURITY_ADMIN_PASSWORD = oneboard
+    ports:
+      - 5000:3000
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+
 volumes:
     mysql:
     sessions:
+    grafana-storage:
