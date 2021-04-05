@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('alerts-embed-url')
+  getAlertsEmbed() : any {
+    return { url: this.appService.getAlertsEmbedUrl() };
+  }
 }
